@@ -1,0 +1,10 @@
+<div class="home-page">
+    <div>
+        <h1 mat-dialog-title>Choose a server</h1>
+        <div mat-dialog-content>Server choice can interfere with the number of characters and language.</div>
+        <div mat-dialog-actions>
+            <button mat-button mat-dialog-close (click)="setServer('JP')" routerLink="dashboard">Japanese</button>
+            <button mat-button mat-dialog-close (click)="setServer('NA')" routerLink="dashboard">Nort American</button>
+        </div>
+    </div>
+</div>

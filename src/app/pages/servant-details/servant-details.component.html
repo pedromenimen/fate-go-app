@@ -1,0 +1,28 @@
+<div class="servant-details-page">
+    <div>
+        <h1>{{servantDetailedInfo.name}}</h1>
+        <div class="servant-container">
+            <div>
+                <p>Original name: {{servantDetailedInfo.originalName}}</p>
+                <p>Class: {{servantDetailedInfo.className}}</p>
+                <p>Type: {{servantDetailedInfo.type}}</p>
+                <p>Flag: {{servantDetailedInfo.flag}}</p>
+                <p>Rarity: {{servantDetailedInfo.rarity}}</p>
+                <p>Cost: {{servantDetailedInfo.cost}}</p>
+                <p>Max level: {{servantDetailedInfo.lvMax}}</p>
+                <p>Gender: {{servantDetailedInfo.gender}}</p>
+                <p>Atribute: {{servantDetailedInfo.attribute}}</p>
+                <p>Original name: {{servantDetailedInfo.originalName}}</p>
+            </div>
+            <ngb-carousel [interval]="86400000" [showNavigationIndicators]="false">
+                <ng-template ngbSlide *ngFor="let image of servantImages; let i = index">
+                    <div>
+                        <img [src]="image" style="width: 100%">
+                    </div>
+                    <p class="carousel-caption" *ngIf="i <= 3">Stage {{i+1}}</p>
+                    <p class="carousel-caption" *ngIf="i > 3">{{costumeNames[i-4]}}</p>
+                </ng-template>
+            </ngb-carousel>
+        </div>
+    </div>
+</div>

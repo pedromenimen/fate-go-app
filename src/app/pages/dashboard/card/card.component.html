@@ -1,0 +1,10 @@
+<mat-card class="example-card" *ngFor="let servant of filteredServantList | async">
+    <div [routerLink]="['/servant-detail', servant.collectionNo]">
+        <img mat-card-image src={{servant.face}}>
+        <mat-card-content class="servant-name">
+            <p>
+                {{servant.name}}
+            </p>
+        </mat-card-content>
+    </div>
+</mat-card>

@@ -1,0 +1,12 @@
+.example-card {
+  min-width: 150px;
+  max-width: 150px;
+  border: black solid 2px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.servant-name {
+  text-align: center;
+}

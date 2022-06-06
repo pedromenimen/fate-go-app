@@ -1,0 +1,12 @@
+.home-page {
+    height: 100vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.home-page > div {
+    background-color: rgb(240, 240, 240);
+    border-radius: 5px;
+    padding: 25px;
+}

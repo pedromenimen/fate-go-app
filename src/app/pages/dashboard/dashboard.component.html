@@ -1,0 +1,14 @@
+<div class="dashboard-page">
+    <div class="example-form">
+        <mat-form-field class="example-full-width" appearance="outline" color="primary">
+            <input type="text" matInput [formControl]="searchValue" [matAutocomplete]="auto"
+                placeholder="search servant...">
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                    {{option.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+    </div>
+    <app-card class="card-container" [filteredServantList]="filteredOptions"></app-card>
+</div>
