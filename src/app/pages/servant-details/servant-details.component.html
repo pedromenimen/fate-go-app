@@ -1,4 +1,8 @@
-<div class="servant-details-page">
+<div class="spinner-container" *ngIf="!loaded">
+    <mat-spinner class="loading"></mat-spinner>
+</div>
+
+<div class="servant-details-page" *ngIf="loaded">
     <div>
         <h1>{{servantDetailedInfo.name}}</h1>
         <div class="servant-container">
@@ -12,7 +16,7 @@
                 <p>Max level: {{servantDetailedInfo.lvMax}}</p>
                 <p>Gender: {{servantDetailedInfo.gender}}</p>
                 <p>Atribute: {{servantDetailedInfo.attribute}}</p>
-                <p>Original name: {{servantDetailedInfo.originalName}}</p>
+                <p>Original name: {{servantDetailedInfo. originalName}}</p>
             </div>
             <ngb-carousel [interval]="86400000" [showNavigationIndicators]="false">
                 <ng-template ngbSlide *ngFor="let image of servantImages; let i = index">

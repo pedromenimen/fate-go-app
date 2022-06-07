@@ -13,6 +13,7 @@ export class ServantDetailsComponent implements OnInit {
   servantDetailedInfo: any = {};
   servantImages: any = [];
   costumeNames: string[] = [];
+  loaded: Boolean = false;
   constructor(
     private servantService: ServantService,
     private route: ActivatedRoute,
@@ -33,6 +34,8 @@ export class ServantDetailsComponent implements OnInit {
         this.servantImages = this.uilsService.getServantImages(
           this.servantDetailedInfo
         );
+        this.loaded = true;
+        console.log(this.servantDetailedInfo);
       },
     });
   }

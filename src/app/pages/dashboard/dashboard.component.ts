@@ -1,9 +1,9 @@
-import { Servant } from '../../types/servant-type';
 import { Component, OnInit } from '@angular/core';
-import { ServantService } from '../../services/servant.service';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { ServantService } from '../../services/servant.service';
+import { Servant } from '../../types/servant-type';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit {
   searchValue = new FormControl();
   options: Servant[] = [];
   filteredOptions!: Observable<Servant[]>;
-
+  loaded: Boolean = false;
   constructor(private servantService: ServantService) {
     this.servantService.getServantList().subscribe({
       next: (servantList) =>
@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
           startWith(''),
           map((name) => this._filter(name))
         );
+        this.loaded = true
       },
     });
   }
