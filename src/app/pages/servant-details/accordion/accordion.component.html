@@ -1,1 +1,67 @@
-<p>accordion works!</p>
+<ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-1">
+  <ngb-panel title="Personal Info">
+    <ng-template ngbPanelContent>
+      <div>
+        <p>Original name: {{detailedServant.originalName}}</p>
+        <p>Class: {{detailedServant.className}}</p>
+        <p>Type: {{detailedServant.type}}</p>
+        <p>Flag: {{detailedServant.flag}}</p>
+        <p>Rarity: {{detailedServant.rarity}}</p>
+        <p>Cost: {{detailedServant.cost}}</p>
+        <p>Max level: {{detailedServant.lvMax}}</p>
+        <p>Gender: {{detailedServant.gender}}</p>
+        <p>Atribute: {{detailedServant.attribute}}</p>
+      </div>
+    </ng-template>
+  </ngb-panel>
+  <ngb-panel title="Skills">
+    <ng-template ngbPanelContent>
+      <div>
+        <h2>Append Skills</h2>
+        <div>
+          <div class="skills-container">
+            <div *ngFor="let skill of getEnglishInfo().appendPassive; let i = index" class="skill">
+              <div class="skill-image"><img src={{skill.skill.icon}} alt=""></div>
+              <div class="skill-info">
+                <div class="detail">
+                  <h3 class="skill-name">{{skill.skill.name}}</h3>
+                  <p class="skill-detail">{{skillDetail(skill.skill.detail, i)}}</p>
+                </div>
+                <div class="skill-level">
+                  <p>Skill level</p>
+                  <select name="levels" id="levels" [formControl]="appendSkillLevelControl"
+                    (change)="changeSkillLevel(i)">
+                    <option *ngFor="let option of options" selected="appendDefaultLevel[i]" [value]="option">
+                      {{option+1}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h2>Active Skills</h2>
+        <div>
+          <div class="skills-container">
+            <div *ngFor="let skill of activeSkills; let i = index" class="skill">
+              <div class="skill-image"><img src={{skill.icon}} alt=""></div>
+              <div class="skill-info">
+                <div class="detail">
+                  <h3 class="skill-name">{{skill.name}}</h3>
+                  <p class="skill-detail">{{skillDetail(skill.detail, i)}}</p>
+                </div>
+                <div class="skill-level">
+                  <p>Skill level</p>
+                  <select name="levels" id="levels" [formControl]="appendSkillLevelControl"
+                    (change)="changeSkillLevel(i)">
+                    <option *ngFor="let option of options" selected="appendDefaultLevel[i]" [value]="option">
+                      {{option+1}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>

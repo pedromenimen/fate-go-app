@@ -14,7 +14,6 @@ export class DashboardComponent implements OnInit {
   searchValue = new FormControl();
   options: Servant[] = [];
   filteredOptions!: Observable<Servant[]>;
-  loaded: Boolean = false;
   constructor(private servantService: ServantService) {
     this.servantService.getServantList().subscribe({
       next: (servantList) =>
@@ -27,7 +26,6 @@ export class DashboardComponent implements OnInit {
           startWith(''),
           map((name) => this._filter(name))
         );
-        this.loaded = true
       },
     });
   }

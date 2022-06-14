@@ -1,8 +1,4 @@
-<div class="spinner-container" *ngIf="!loaded">
-    <mat-spinner class="loading"></mat-spinner>
-</div>
-
-<div class="dashboard-page" *ngIf="loaded">
+<div class="dashboard-page">
     <div class="example-form">
         <mat-form-field class="example-full-width" appearance="outline" color="primary">
             <input type="text" matInput [formControl]="searchValue" [matAutocomplete]="auto"

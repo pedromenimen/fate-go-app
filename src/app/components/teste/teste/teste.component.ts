@@ -23,14 +23,6 @@ export class TesteComponent implements OnInit {
     });
     console.log(
       this.filterControl.valueChanges.pipe(startWith("a"))
-      // this.filterControl.valueChanges.subscribe({
-      //   next: (inputText: string) => {
-      //     this.filteredServantList = this.servantList.filter((servant) =>
-      //       servant.name.toLowerCase().includes(inputText.toLowerCase())
-      //     );
-      //     console.log(this.filteredServantList);
-        // },
-      // })
     );
   }
 }

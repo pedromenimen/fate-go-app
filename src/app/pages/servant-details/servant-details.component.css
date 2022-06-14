@@ -6,9 +6,9 @@
 }
 
 .servant-details-page > div {
+  position: absolute;
   width: 70vw;
   margin: 50px 150px;
-  /* height: 90vh; */
   background-color: white;
   opacity: 0.95;
   padding: 20px;
@@ -33,11 +33,18 @@
   position: unset;
 }
 
-.spinner-container {
-  width: 100vw;
-  height: 100vh;
-  background: rgba(255, 255, 255, 0.8) no-repeat fixed center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+app-accordion {
+  flex-grow: 1;
+  margin-right: 15px;
+}
+ngb-carousel {
+  flex-grow: 0;
+}
+
+@media only screen and (max-width: 600px) {
+  .servant-details-page > div {
+    background-color: red;
+    width: 95vw;
+    position: absolute;
+  }
 }

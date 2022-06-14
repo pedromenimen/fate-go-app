@@ -8,7 +8,6 @@ import { Servant } from '../types/servant-type';
 })
 export class ServantService {
   server: string = '';
-  servantId: number = 0;
   constructor(private http: HttpClient) {}
   basicApiUrlNA = 'https://api.atlasacademy.io/export/NA/basic_servant.json';
   basicApiUrlJP =
@@ -21,12 +20,17 @@ export class ServantService {
   }
 
   getDetailedSevantInfo(id: number): Observable<any> {
-    this.servantId = id;
     this.server = localStorage.getItem('server')!;
     return this.http.get<any>(
       this.server === 'JP'
-        ? `https://api.atlasacademy.io/nice/JP/servant/${this.servantId}?lore=true&lang=en`
-        : `https://api.atlasacademy.io/nice/NA/servant/${this.servantId}?lore=true`
+        ? `https://api.atlasacademy.io/nice/JP/servant/${id}?lore=true&lang=en`
+        : `https://api.atlasacademy.io/nice/NA/servant/${id}?lore=true`
+    );
+  }
+
+  getDetailedInfoEnglish(id: number): Observable<any> {
+    return this.http.get<any>(
+      `https://api.atlasacademy.io/nice/NA/servant/${id}?lore=true`
     );
   }
 }

@@ -1,0 +1,52 @@
+.skills-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skill {
+  display: flex;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.skill-image {
+  display: flex;
+}
+
+.skill-image img {
+  height: 50px;
+  align-self: center;
+}
+
+.skill-name {
+  flex-grow: 5;
+}
+
+.skill-detail {
+  flex-grow: 1;
+}
+
+.skill-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.skill-info > .detail {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  align-items: center;
+}
+
+.skill-info select {
+  width: 100px;
+}
+
+.skill-level {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

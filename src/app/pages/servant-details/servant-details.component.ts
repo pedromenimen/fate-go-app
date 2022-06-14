@@ -13,11 +13,12 @@ export class ServantDetailsComponent implements OnInit {
   servantDetailedInfo: any = {};
   servantImages: any = [];
   costumeNames: string[] = [];
-  loaded: Boolean = false;
+  servantDetailedEnglishInfo: any | false = {};
+
   constructor(
     private servantService: ServantService,
     private route: ActivatedRoute,
-    private uilsService: UtilsService
+    private utilsService: UtilsService
   ) {}
   ngOnInit(): void {
     this.route.params.subscribe({
@@ -28,15 +29,21 @@ export class ServantDetailsComponent implements OnInit {
       next: (servantInfo) => (this.servantDetailedInfo = servantInfo),
       error: (err) => console.log(err),
       complete: () => {
-        this.costumeNames = this.uilsService.getCostumeNames(
+        this.costumeNames = this.utilsService.getCostumeNames(
           this.servantDetailedInfo
         );
-        this.servantImages = this.uilsService.getServantImages(
+        this.servantImages = this.utilsService.getServantImages(
           this.servantDetailedInfo
         );
-        this.loaded = true;
-        console.log(this.servantDetailedInfo);
       },
+    });
+    this.servantService.getDetailedInfoEnglish(this.servantId).subscribe({
+      next: (servantInfo) => (this.servantDetailedEnglishInfo = servantInfo),
+      error: (err) => {
+        console.log(err);
+        this.servantDetailedEnglishInfo = false;
+      },
+      complete: () => {},
     });
   }
 }
