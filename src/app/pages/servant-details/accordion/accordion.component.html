@@ -1,67 +1,73 @@
-<ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-1">
-  <ngb-panel title="Personal Info">
-    <ng-template ngbPanelContent>
-      <div>
-        <p>Original name: {{detailedServant.originalName}}</p>
-        <p>Class: {{detailedServant.className}}</p>
-        <p>Type: {{detailedServant.type}}</p>
-        <p>Flag: {{detailedServant.flag}}</p>
-        <p>Rarity: {{detailedServant.rarity}}</p>
-        <p>Cost: {{detailedServant.cost}}</p>
-        <p>Max level: {{detailedServant.lvMax}}</p>
-        <p>Gender: {{detailedServant.gender}}</p>
-        <p>Atribute: {{detailedServant.attribute}}</p>
-      </div>
-    </ng-template>
-  </ngb-panel>
-  <ngb-panel title="Skills">
-    <ng-template ngbPanelContent>
-      <div>
-        <h2>Append Skills</h2>
-        <div>
-          <div class="skills-container">
-            <div *ngFor="let skill of getEnglishInfo().appendPassive; let i = index" class="skill">
-              <div class="skill-image"><img src={{skill.skill.icon}} alt=""></div>
-              <div class="skill-info">
-                <div class="detail">
-                  <h3 class="skill-name">{{skill.skill.name}}</h3>
-                  <p class="skill-detail">{{skillDetail(skill.skill.detail, i)}}</p>
-                </div>
-                <div class="skill-level">
-                  <p>Skill level</p>
-                  <select name="levels" id="levels" [formControl]="appendSkillLevelControl"
-                    (change)="changeSkillLevel(i)">
-                    <option *ngFor="let option of options" selected="appendDefaultLevel[i]" [value]="option">
-                      {{option+1}}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Personal info
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <p>Original name: {{detailedServant.originalName}}</p>
+    <p>Class: {{detailedServant.className}}</p>
+    <p>Type: {{detailedServant.type}}</p>
+    <p>Flag: {{detailedServant.flag}}</p>
+    <p>Rarity: {{detailedServant.rarity}}</p>
+    <p>Cost: {{detailedServant.cost}}</p>
+    <p>Max level: {{detailedServant.lvMax}}</p>
+    <p>Gender: {{detailedServant.gender}}</p>
+    <p>Atribute: {{detailedServant.attribute}}</p>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Append skills
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="skills-container">
+      <div *ngFor="let skill of getEnglishInfo().appendPassive; let i = index" class="skill">
+        <div class="skill-image"><img src={{skill.skill.icon}} alt=""></div>
+        <div class="skill-info">
+          <div class="detail">
+            <h3 class="skill-name">{{skill.skill.name}}</h3>
+            <p class="skill-detail">{{appendSkillDetail(skill.skill.detail, i)}}</p>
           </div>
-        </div>
-        <h2>Active Skills</h2>
-        <div>
-          <div class="skills-container">
-            <div *ngFor="let skill of activeSkills; let i = index" class="skill">
-              <div class="skill-image"><img src={{skill.icon}} alt=""></div>
-              <div class="skill-info">
-                <div class="detail">
-                  <h3 class="skill-name">{{skill.name}}</h3>
-                  <p class="skill-detail">{{skillDetail(skill.detail, i)}}</p>
-                </div>
-                <div class="skill-level">
-                  <p>Skill level</p>
-                  <select name="levels" id="levels" [formControl]="appendSkillLevelControl"
-                    (change)="changeSkillLevel(i)">
-                    <option *ngFor="let option of options" selected="appendDefaultLevel[i]" [value]="option">
-                      {{option+1}}</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+          <div class="skill-level">
+            <p>Skill level</p>
+            <select name="levels" attr.id="append-skill-{{i+1}}" [formControl]="appendSkillLevelControl"
+              (change)="changeAppendSkillLevel(i)">
+              <option *ngFor="let option of options" selected="appendDefaultLevel[i]" [value]="option">
+                {{option+1}}</option>
+            </select>
           </div>
         </div>
       </div>
-    </ng-template>
-  </ngb-panel>
-</ngb-accordion>
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Active skills
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="skills-container">
+      <div *ngFor="let skill of activeSkills; let i = index" class="skill">
+        <div class="skill-image"><img src={{skill.icon}} alt=""></div>
+        <div class="skill-info">
+          <div class="detail">
+            <h3 class="skill-name">{{skill.name}}</h3>
+            <p class="skill-detail">{{skill.detail}}</p>
+            <p class="skill-detail">{{activeSkillDetail(skill, i)}}</p>
+            <div *ngFor="let function of skill.functions">
+              <p *ngIf="function.funcType !== 'hastenNpturn'">{{skillTextPopUp(function, i)}}</p>
+            </div>
+          </div>
+          <div class="skill-level">
+            <p>Skill level</p>
+            <select name="levels" [formControl]="activeSkillLevelControl" (change)="changeActiveSkillLevel(i)">
+              <option *ngFor="let option of options" selected="appendDefaultLevel[i]" [value]="option">
+                {{option+1}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </mat-expansion-panel>
+</mat-accordion>

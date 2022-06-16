@@ -1,8 +1,7 @@
-import { startWith } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ServantService } from '../../../services/servant.service';
 import { Servant } from '../../../types/servant-type';
-import { FormControl } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-teste',
@@ -19,10 +18,7 @@ export class TesteComponent implements OnInit {
     this.servantService.getServantList().subscribe({
       next: (servantList) => (this.servantList = servantList),
       error: (error) => console.log(error),
-      complete: () => "",
+      complete: () => '',
     });
-    console.log(
-      this.filterControl.valueChanges.pipe(startWith("a"))
-    );
   }
 }

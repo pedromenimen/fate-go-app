@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ServantService } from 'src/app/services/servant.service';
 import { UtilsService } from './../../utils/utils.service';
 
@@ -18,7 +19,8 @@ export class ServantDetailsComponent implements OnInit {
   constructor(
     private servantService: ServantService,
     private route: ActivatedRoute,
-    private utilsService: UtilsService
+    private utilsService: UtilsService,
+    private modalService: NgbModal
   ) {}
   ngOnInit(): void {
     this.route.params.subscribe({
@@ -41,9 +43,19 @@ export class ServantDetailsComponent implements OnInit {
       next: (servantInfo) => (this.servantDetailedEnglishInfo = servantInfo),
       error: (err) => {
         console.log(err);
-        this.servantDetailedEnglishInfo = false;
+        this.servantDetailedEnglishInfo = { skill: [] };
       },
       complete: () => {},
     });
+  }
+  openVerticallyCentered(content: any) {
+    this.modalService.open(content, { size: 'lg' });
+  }
+  popoverFunc(i: number) {
+    if (i <= 3) {
+      return `Stage ${i + 1}`;
+    } else {
+      return `${this.costumeNames[i - 4]}`;
+    }
   }
 }

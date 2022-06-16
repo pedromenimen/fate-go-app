@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
@@ -45,6 +46,7 @@ import { ServantDetailsComponent } from './pages/servant-details/servant-details
     MatInputModule,
     ReactiveFormsModule,
     NgbModule,
+    MatExpansionModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

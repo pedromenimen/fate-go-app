@@ -7,16 +7,17 @@
 
 .servant-details-page > div {
   position: absolute;
-  width: 70vw;
+  width: 80vw;
   margin: 50px 150px;
   background-color: white;
   opacity: 0.95;
   padding: 20px;
   border-radius: 8px;
+  height: auto;
 }
 
-.carousel {
-  max-width: 250px;
+.carousel-page {
+  max-width: 150px;
 }
 
 .servant-container {
@@ -28,6 +29,7 @@
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: nowrap;
+  height: auto;
 }
 .carousel-caption {
   position: unset;
@@ -41,10 +43,10 @@ ngb-carousel {
   flex-grow: 0;
 }
 
-@media only screen and (max-width: 600px) {
-  .servant-details-page > div {
-    background-color: red;
-    width: 95vw;
-    position: absolute;
-  }
+#carousel-modal {
+  width: 60vw;
+  align-self: center;
+  width: fit-content;
+  transform: translateX(-50%);
+  left: 50%;
 }

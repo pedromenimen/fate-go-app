@@ -33,7 +33,10 @@ export class UtilsService {
     return servantImages;
   }
 
-  getServantSkills(detailedServant: any, detailedServantEnglish: any): any {
+  getServantActiveSkills(
+    detailedServant: any,
+    detailedServantEnglish: any
+  ): any {
     if (detailedServant.skills.length > detailedServantEnglish.skills.length) {
       let englishSkills = detailedServantEnglish.skills;
       let japanese_skills = detailedServant.skills.splice(

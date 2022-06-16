@@ -4,9 +4,19 @@
   border: black solid 2px;
   margin: 5px;
   border-radius: 8px;
+  background-color: white;
   cursor: pointer;
 }
 
 .servant-name {
   text-align: center;
+}
+
+
+.mat-card-image {
+  margin: 0;
+}
+
+.mat-card {
+  padding: 16px 0;
 }

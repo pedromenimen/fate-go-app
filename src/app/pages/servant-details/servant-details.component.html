@@ -1,21 +1,32 @@
 <div class="servant-details-page">
-    <div>
-        <h1>{{servantDetailedInfo.name}}</h1>
-        <div class="servant-container">
+  <div>
+    <h1>{{servantDetailedInfo.name}}</h1>
+    <div class="servant-container">
 
-            <app-accordion [detailedServant]="servantDetailedInfo"
-                [detailedServantEnglish]="servantDetailedEnglishInfo"></app-accordion>
-
-            <ngb-carousel [showNavigationArrows]="false" [interval]="5000" [showNavigationIndicators]="false"
-                [pauseOnHover]="true">
-                <ng-template ngbSlide *ngFor="let image of servantImages; let i = index">
-                    <div>
-                        <img [src]="image" style="width: 100%">
-                    </div>
-                    <p class="carousel-caption" *ngIf="i <= 3">Stage {{i+1}}</p>
-                    <p class="carousel-caption" *ngIf="i > 3">{{costumeNames[i-4]}}</p>
-                </ng-template>
-            </ngb-carousel>
+      <app-accordion [detailedServant]="servantDetailedInfo" [detailedServantEnglish]="servantDetailedEnglishInfo">
+      </app-accordion>
+      <ng-template #content>
+        <div>
+          <ngb-carousel id="carousel-modal" [showNavigationArrows]="true" [animation]="false" [pauseOnHover]="true"
+            [interval]="99999999999" [wrap]="true">
+            <ng-template ngbSlide *ngFor="let image of servantImages; let i = index">
+              <div>
+                <img [src]="image">
+              </div>
+            </ng-template>
+          </ngb-carousel>
         </div>
+      </ng-template>
+      <ngb-carousel [showNavigationArrows]="false" [showNavigationIndicators]="false" [pauseOnHover]="true"
+        class="carousel-page">
+        <ng-template ngbSlide *ngFor="let image of servantImages; let i = index">
+          <div>
+            <img [src]="image" (click)="openVerticallyCentered(content)">
+          </div>
+          <p class="carousel-caption" *ngIf="i <= 3">Stage {{i+1}}</p>
+          <p class="carousel-caption" *ngIf="i > 3">{{costumeNames[i-4]}}</p>
+        </ng-template>
+      </ngb-carousel>
     </div>
+  </div>
 </div>
