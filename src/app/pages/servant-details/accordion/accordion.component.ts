@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Function, Skill } from 'src/app/types/servant-type';
+import { DetailedServant } from './../../../types/servant-type';
 import { UtilsService } from './../../../utils/utils.service';
 
 @Component({
@@ -8,36 +10,33 @@ import { UtilsService } from './../../../utils/utils.service';
   styleUrls: ['./accordion.component.css'],
 })
 export class AccordionComponent implements OnInit {
-  @Input() detailedServant: any;
-  @Input() detailedServantEnglish: any;
+  @Input() detailedServant!: DetailedServant;
+  @Input() detailedServantEnglish!: DetailedServant;
   appendSkillLevelControl = new FormControl('0');
   activeSkillLevelControl = new FormControl('0');
   appendSkillLevel: Array<string> = [];
   activeSkillLevel: Array<string> = [];
   appendSkillModifyer: Array<number> = [300, 1000, 200];
-  activeSkillModifyer: Array<number> = [];
-  // appendDefaultLevel: Array<number> = [0, 0, 0];
-  // activeDefaultLevel: Array<number> = [0, 0, 0];
   options: Array<number> = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  activeSkills: Array<any> = [];
+  activeSkills: Array<Skill> = [];
   constructor(private utilsService: UtilsService) {}
   ngOnInit(): void {}
   ngOnChanges() {
-    if (this.detailedServant.id && this.detailedServantEnglish.id) {
+    if (this.detailedServant?.id && this.detailedServantEnglish?.id) {
       const activeSkills = this.utilsService
         .getServantActiveSkills(
           this.detailedServant,
           this.detailedServantEnglish
         )
-        .sort((a: any, b: any) => a.num - b.num);
-      console.log(activeSkills);
-      let functions: Array<any> = [];
-      activeSkills.map(
-        (skill: any) => (functions = [...functions, ...skill.functions])
-      );
-      // console.log(functions.map((qqq) => qqq.svals));
+        .sort((a: Skill, b: Skill) => a.num - b.num)
+        .filter((element: Skill, index: number, array: Array<Skill>) => {
+          return !array
+            .map((item) => item.name)
+            .includes(element.name, index + 1);
+        });
       this.activeSkills = activeSkills;
       this.activeSkillLevel = activeSkills.map(() => '0');
+      console.log(activeSkills);
     }
   }
 
@@ -45,15 +44,11 @@ export class AccordionComponent implements OnInit {
     this.appendSkillLevel[index] = this.appendSkillLevelControl.value;
     this.appendSkillModifyer[index] =
       this.detailedServant.appendPassive[index].skill.functions[0].svals[
-        this.appendSkillLevel[index]
+        parseInt(this.appendSkillLevel[index])
       ].Value;
+    console.log(this.appendSkillModifyer);
   }
 
-  changeActiveSkillLevel(index: number) {
-    this.activeSkillLevel[index] = this.activeSkillLevelControl.value;
-    this.activeSkillModifyer[index] =
-      this.activeSkills[index].functions[0].svals[index];
-  }
   getEnglishInfo() {
     if (this.detailedServantEnglish) {
       return this.detailedServantEnglish;
@@ -81,23 +76,13 @@ export class AccordionComponent implements OnInit {
       );
     }
   }
-  activeSkillDetail(skillInfo: any, index: number) {
+  activeSkillDetail(skillInfo: Skill, index: number) {
     return `Cooldown: ${
-      skillInfo.coolDown[this.activeSkillLevel[index]]
+      skillInfo.coolDown[parseInt(this.activeSkillLevel[index])]
     } turns`;
   }
 
-  skillTextPopUp(func: any, index: number) {
-    if (func.funcType === 'gainHp') {
-      return `HP Gain: ${func.svals[this.activeSkillLevel[index]].Value}`;
-    }
-    if (func.funcType === 'gainNp') {
-      return `${func.funcPopupText}: ${
-        func.svals[this.activeSkillLevel[index]].Value / 100
-      }%`;
-    }
-    return `${func.funcPopupText}: ${
-      func.svals[this.activeSkillLevel[index]].Value / 10
-    }%`;
+  skillTextPopUp(func: Function, index: number) {
+    return '';
   }
 }

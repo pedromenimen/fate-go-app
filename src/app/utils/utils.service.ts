@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DetailedServant, Skill } from './../types/servant-type';
 
 @Injectable({
   providedIn: 'root',
@@ -6,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class UtilsService {
   constructor() {}
 
-  getCostumeNames(servantDetailedInfo: any): string[] {
+  getCostumeNames(servantDetailedInfo: DetailedServant): string[] {
     if (Object.keys(servantDetailedInfo.profile.costume).length > 0) {
       const costumeIds = Object.keys(servantDetailedInfo.profile.costume);
       const costumeNames: string[] = [];
@@ -18,7 +19,7 @@ export class UtilsService {
     return [];
   }
 
-  getServantImages(servantDetailedInfo: any): string[] | unknown[] {
+  getServantImages(servantDetailedInfo: DetailedServant): string[] | unknown[] {
     const ascensionImages = Object.values(
       servantDetailedInfo.extraAssets.charaGraph.ascension
     );
@@ -34,9 +35,9 @@ export class UtilsService {
   }
 
   getServantActiveSkills(
-    detailedServant: any,
-    detailedServantEnglish: any
-  ): any {
+    detailedServant: DetailedServant,
+    detailedServantEnglish: DetailedServant
+  ): Array<Skill> {
     if (detailedServant.skills.length > detailedServantEnglish.skills.length) {
       let englishSkills = detailedServantEnglish.skills;
       let japanese_skills = detailedServant.skills.splice(

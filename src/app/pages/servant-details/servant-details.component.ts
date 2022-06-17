@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ServantService } from 'src/app/services/servant.service';
+import { DetailedServant } from './../../types/servant-type';
 import { UtilsService } from './../../utils/utils.service';
 
 @Component({
@@ -11,10 +12,10 @@ import { UtilsService } from './../../utils/utils.service';
 })
 export class ServantDetailsComponent implements OnInit {
   servantId: number = 0;
-  servantDetailedInfo: any = {};
-  servantImages: any = [];
+  servantDetailedInfo!: DetailedServant;
+  servantImages!: Array<string> | Array<unknown>;
   costumeNames: string[] = [];
-  servantDetailedEnglishInfo: any | false = {};
+  servantDetailedEnglishInfo!: DetailedServant;
 
   constructor(
     private servantService: ServantService,
@@ -43,12 +44,11 @@ export class ServantDetailsComponent implements OnInit {
       next: (servantInfo) => (this.servantDetailedEnglishInfo = servantInfo),
       error: (err) => {
         console.log(err);
-        this.servantDetailedEnglishInfo = { skill: [] };
       },
       complete: () => {},
     });
   }
-  openVerticallyCentered(content: any) {
+  openVerticallyCentered(content: TemplateRef<any>) {
     this.modalService.open(content, { size: 'lg' });
   }
   popoverFunc(i: number) {

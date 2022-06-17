@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ServantService } from '../../services/servant.service';
-import { Servant } from '../../types/servant-type';
+import { SimpleServant } from '../../types/servant-type';
 
 @Component({
   selector: 'app-dashboard',
@@ -12,8 +12,8 @@ import { Servant } from '../../types/servant-type';
 })
 export class DashboardComponent implements OnInit {
   searchValue = new FormControl();
-  options: Servant[] = [];
-  filteredOptions!: Observable<Servant[]>;
+  options: SimpleServant[] = [];
+  filteredOptions!: Observable<SimpleServant[]>;
   constructor(private servantService: ServantService) {
     this.servantService.getServantList().subscribe({
       next: (servantList) =>
@@ -32,11 +32,11 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {}
 
-  displayFn(user: Servant): string {
+  displayFn(user: SimpleServant): string {
     return user && user.name ? user.name : '';
   }
 
-  private _filter(name: string): Servant[] {
+  private _filter(name: string): SimpleServant[] {
     const filterValue = name.toLowerCase();
 
     return this.options.filter((option) =>
