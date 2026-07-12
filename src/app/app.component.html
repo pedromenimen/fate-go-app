@@ -1,3 +1,7 @@
-<div style="background-image: url('/assets/fgobackground.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;">
-  <router-outlet></router-outlet>
+<div class="app-shell" style="background-image: url('/assets/fgobackground.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed; min-height: 100vh;">
+  <app-header></app-header>
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
 </div>
