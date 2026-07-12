@@ -1,5 +1,4 @@
-import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { SimpleServant } from '../../../types/servant-type';
 
 @Component({
@@ -9,10 +8,6 @@ import { SimpleServant } from '../../../types/servant-type';
     changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
-export class CardComponent implements OnInit {
-  @Input() filteredServantList!: Observable<SimpleServant[]>;
-
-  constructor() {}
-
-  ngOnInit(): void {}
+export class CardComponent {
+  @Input() filteredServantList: SimpleServant[] = [];
 }

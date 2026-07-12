@@ -1,7 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
 import { ServantService } from '../../services/servant.service';
 import { SimpleServant } from '../../types/servant-type';
 
@@ -15,34 +13,74 @@ import { SimpleServant } from '../../types/servant-type';
 export class DashboardComponent implements OnInit {
   searchValue = new UntypedFormControl();
   options: SimpleServant[] = [];
-  filteredOptions!: Observable<SimpleServant[]>;
+  filteredServants: SimpleServant[] = [];
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 20;
+  pageSizeOptions = [10, 20, 50, 100];
+  totalPages = 1;
+  pagedServants: SimpleServant[] = [];
+
   constructor(private servantService: ServantService) {
     this.servantService.getServantList().subscribe({
-      next: (servantList) =>
-        (this.options = servantList.filter(
+      next: (servantList) => {
+        this.options = servantList.filter(
           (servant) => servant.type.toLowerCase() !== 'enemycollectiondetail'
-        )),
-      error: (err: Error) => console.log(err),
-      complete: () => {
-        this.filteredOptions = this.searchValue.valueChanges.pipe(
-          startWith(''),
-          map((name) => this._filter(name))
         );
+        this.filteredServants = [...this.options];
+        this.applyFilter('');
       },
+      error: (err: Error) => console.log(err),
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.searchValue.valueChanges.subscribe((name: string) => {
+      this.applyFilter(name || '');
+    });
+  }
+
+  applyFilter(name: string): void {
+    const filterValue = name.toLowerCase();
+    this.filteredServants = this.options.filter((option) =>
+      option.name.toLowerCase().includes(filterValue)
+    );
+    this.currentPage = 1;
+    this.updatePage();
+  }
+
+  updatePage(): void {
+    this.totalPages = Math.max(1, Math.ceil(this.filteredServants.length / this.pageSize));
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages;
+    }
+    const start = (this.currentPage - 1) * this.pageSize;
+    this.pagedServants = this.filteredServants.slice(start, start + this.pageSize);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePage();
+  }
+
+  setPageSize(size: number): void {
+    this.pageSize = size;
+    this.updatePage();
+  }
 
   displayFn(user: SimpleServant): string {
     return user && user.name ? user.name : '';
   }
 
-  private _filter(name: string): SimpleServant[] {
-    const filterValue = name.toLowerCase();
-
-    return this.options.filter((option) =>
-      option.name.toLowerCase().includes(filterValue)
-    );
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const start = Math.max(1, this.currentPage - 2);
+    const end = Math.min(this.totalPages, this.currentPage + 2);
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }

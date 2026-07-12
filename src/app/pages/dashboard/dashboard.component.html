@@ -7,7 +7,7 @@
       <input type="text" matInput [formControl]="searchValue" [matAutocomplete]="auto"
         placeholder="Type a servant name...">
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-        @for (option of filteredOptions | async; track option) {
+        @for (option of filteredServants.slice(0, 50); track option.collectionNo) {
           <mat-option [value]="option">
             <div class="option-content">
               <img [src]="option.face" class="option-icon" alt="">
@@ -18,5 +18,34 @@
       </mat-autocomplete>
     </mat-form-field>
   </div>
-  <app-card class="card-container" [filteredServantList]="filteredOptions"></app-card>
+
+  <div class="page-controls">
+    <div class="page-info">
+      Showing {{pagedServants.length}} of {{filteredServants.length}} servants
+    </div>
+    <div class="page-size-selector">
+      <span class="page-size-label">Per page:</span>
+      @for (size of pageSizeOptions; track size) {
+        <button class="page-size-btn" [class.active]="pageSize === size" (click)="setPageSize(size)">
+          {{size}}
+        </button>
+      }
+    </div>
+  </div>
+
+  <app-card class="card-container" [filteredServantList]="pagedServants"></app-card>
+
+  <div class="pagination">
+    <button class="page-btn" [class.disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+      ‹ Prev
+    </button>
+    @for (page of getPageNumbers(); track page) {
+      <button class="page-btn" [class.active]="currentPage === page" (click)="goToPage(page)">
+        {{page}}
+      </button>
+    }
+    <button class="page-btn" [class.disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+      Next ›
+    </button>
+  </div>
 </div>
