@@ -1,20 +1,35 @@
-@for (servant of filteredServantList; track servant.collectionNo) {
-  <mat-card class="servant-card" appearance="outlined">
-    <div class="card-link" [routerLink]="['/servant-detail', servant.collectionNo]">
-      <div class="card-image-wrapper">
-        @if (!isImageLoaded(servant.collectionNo)) {
-          <div class="image-skeleton"></div>
-        }
-        <img class="card-image"
-             [class.loaded]="isImageLoaded(servant.collectionNo)"
-             loading="lazy"
-             [src]="servant.face"
-             alt="{{servant.name}}"
-             (load)="onImageLoad(servant.collectionNo)">
+@if (loading) {
+  @for (_ of skeletonArray; track _) {
+    <mat-card class="servant-card skeleton" appearance="outlined">
+      <div class="card-link">
+        <div class="card-image-wrapper">
+          <div class="image-skeleton shimmer"></div>
+        </div>
+        <mat-card-content class="card-content">
+          <div class="text-skeleton shimmer"></div>
+        </mat-card-content>
       </div>
-      <mat-card-content class="card-content">
-        <p class="card-name">{{servant.name}}</p>
-      </mat-card-content>
-    </div>
-  </mat-card>
+    </mat-card>
+  }
+} @else {
+  @for (servant of filteredServantList; track servant.collectionNo) {
+    <mat-card class="servant-card" appearance="outlined">
+      <div class="card-link" [routerLink]="['/servant-detail', servant.collectionNo]">
+        <div class="card-image-wrapper">
+          @if (!isImageLoaded(servant.collectionNo)) {
+            <div class="image-skeleton shimmer"></div>
+          }
+          <img class="card-image"
+               [class.loaded]="isImageLoaded(servant.collectionNo)"
+               loading="lazy"
+               [src]="servant.face"
+               alt="{{servant.name}}"
+               (load)="onImageLoad(servant.collectionNo)">
+        </div>
+        <mat-card-content class="card-content">
+          <p class="card-name">{{servant.name}}</p>
+        </mat-card-content>
+      </div>
+    </mat-card>
+  }
 }

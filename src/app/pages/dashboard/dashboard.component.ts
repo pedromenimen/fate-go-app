@@ -14,6 +14,7 @@ export class DashboardComponent implements OnInit {
   searchValue = new UntypedFormControl();
   options: SimpleServant[] = [];
   filteredServants: SimpleServant[] = [];
+  loading = true;
 
   // Pagination
   currentPage = 1;
@@ -30,8 +31,12 @@ export class DashboardComponent implements OnInit {
         );
         this.filteredServants = [...this.options];
         this.applyFilter('');
+        this.loading = false;
       },
-      error: (err: Error) => console.log(err),
+      error: (err: Error) => {
+        console.log(err);
+        this.loading = false;
+      },
     });
   }
 

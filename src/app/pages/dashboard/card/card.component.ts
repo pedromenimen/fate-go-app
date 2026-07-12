@@ -10,7 +10,14 @@ import { SimpleServant } from '../../../types/servant-type';
 })
 export class CardComponent {
   @Input() filteredServantList: SimpleServant[] = [];
+  @Input() loading = false;
+  @Input() skeletonCount = 20;
+
   loadedImages = new Set<number>();
+
+  get skeletonArray(): number[] {
+    return Array.from({ length: this.skeletonCount }, (_, i) => i);
+  }
 
   onImageLoad(collectionNo: number): void {
     this.loadedImages.add(collectionNo);

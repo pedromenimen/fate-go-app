@@ -3,7 +3,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  padding: 0 24px 8px;
+  padding: 16px 24px 8px;
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -110,21 +110,26 @@
   object-fit: cover;
 }
 
-/* Page controls bar */
-.page-controls {
+/* Controls panel — glass card matching search section */
+.controls-panel {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
-  max-width: 1400px;
-  padding: 0 24px;
-  margin-bottom: 12px;
+  width: 90%;
+  max-width: 600px;
+  padding: 12px 20px;
+  margin: 0 auto 12px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 12px;
 }
 
 .page-info {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.55);
   font-size: 13px;
 }
 
@@ -140,69 +145,52 @@
   margin-right: 4px;
 }
 
-.page-size-btn {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s ease;
-}
-
-.page-size-btn:hover {
-  background: rgba(255, 215, 0, 0.15);
-  color: #ffd700;
-  border-color: rgba(255, 215, 0, 0.3);
-}
-
-.page-size-btn.active {
-  background: rgba(255, 215, 0, 0.2);
-  color: #ffd700;
-  border-color: #ffd700;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 20px 24px 40px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.page-btn {
+/* Glass buttons — matching search input palette */
+.glass-btn {
   background: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
-  padding: 6px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 6px 14px;
   font-size: 13px;
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s ease;
-  min-width: 36px;
+  min-width: 38px;
   text-align: center;
 }
 
-.page-btn:hover:not(.disabled):not(.active) {
+.glass-btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+  min-width: auto;
+}
+
+.glass-btn:hover:not(.disabled):not(.active) {
   background: rgba(255, 215, 0, 0.12);
   color: #ffd700;
   border-color: rgba(255, 215, 0, 0.3);
 }
 
-.page-btn.active {
+.glass-btn.active {
   background: rgba(255, 215, 0, 0.2);
   color: #ffd700;
   border-color: #ffd700;
   font-weight: 600;
 }
 
-.page-btn.disabled,
-.page-btn:disabled {
+.glass-btn.disabled,
+.glass-btn:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+
+/* Pagination - same glass look */
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 24px 40px;
+  flex-wrap: wrap;
+  justify-content: center;
 }

@@ -19,33 +19,35 @@
     </mat-form-field>
   </div>
 
-  <div class="page-controls">
-    <div class="page-info">
-      Showing {{pagedServants.length}} of {{filteredServants.length}} servants
+  <app-card class="card-container" [filteredServantList]="pagedServants" [loading]="loading" [skeletonCount]="pageSize"></app-card>
+
+  @if (!loading) {
+    <div class="controls-panel">
+      <div class="page-info">
+        Showing {{pagedServants.length}} of {{filteredServants.length}} servants
+      </div>
+      <div class="page-size-selector">
+        <span class="page-size-label">Per page:</span>
+        @for (size of pageSizeOptions; track size) {
+          <button class="glass-btn glass-btn-sm" [class.active]="pageSize === size" (click)="setPageSize(size)">
+            {{size}}
+          </button>
+        }
+      </div>
     </div>
-    <div class="page-size-selector">
-      <span class="page-size-label">Per page:</span>
-      @for (size of pageSizeOptions; track size) {
-        <button class="page-size-btn" [class.active]="pageSize === size" (click)="setPageSize(size)">
-          {{size}}
+
+    <div class="pagination">
+      <button class="glass-btn" [class.disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+        ‹ Prev
+      </button>
+      @for (page of getPageNumbers(); track page) {
+        <button class="glass-btn" [class.active]="currentPage === page" (click)="goToPage(page)">
+          {{page}}
         </button>
       }
-    </div>
-  </div>
-
-  <app-card class="card-container" [filteredServantList]="pagedServants"></app-card>
-
-  <div class="pagination">
-    <button class="page-btn" [class.disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
-      ‹ Prev
-    </button>
-    @for (page of getPageNumbers(); track page) {
-      <button class="page-btn" [class.active]="currentPage === page" (click)="goToPage(page)">
-        {{page}}
+      <button class="glass-btn" [class.disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+        Next ›
       </button>
-    }
-    <button class="page-btn" [class.disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
-      Next ›
-    </button>
-  </div>
+    </div>
+  }
 </div>
