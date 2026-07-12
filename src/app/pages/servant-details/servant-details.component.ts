@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ServantService } from 'src/app/services/servant.service';
@@ -6,9 +6,11 @@ import { DetailedServant } from './../../types/servant-type';
 import { UtilsService } from './../../utils/utils.service';
 
 @Component({
-  selector: 'app-servant-details',
-  templateUrl: './servant-details.component.html',
-  styleUrls: ['./servant-details.component.css'],
+    selector: 'app-servant-details',
+    templateUrl: './servant-details.component.html',
+    styleUrls: ['./servant-details.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ServantDetailsComponent implements OnInit {
   servantId: number = 0;

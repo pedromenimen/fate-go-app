@@ -9,23 +9,31 @@
         <div>
           <ngb-carousel id="carousel-modal" [showNavigationArrows]="true" [animation]="false" [pauseOnHover]="true"
             [interval]="99999999999" [wrap]="true">
-            <ng-template ngbSlide *ngFor="let image of servantImages; let i = index">
-              <div>
-                <img [src]="image">
-              </div>
-            </ng-template>
+            @for (image of servantImages; track image; let i = $index) {
+              <ng-template ngbSlide>
+                <div>
+                  <img [src]="image">
+                </div>
+              </ng-template>
+            }
           </ngb-carousel>
         </div>
       </ng-template>
       <ngb-carousel [showNavigationArrows]="false" [showNavigationIndicators]="false" [pauseOnHover]="true"
         class="carousel-page">
-        <ng-template ngbSlide *ngFor="let image of servantImages; let i = index">
-          <div>
-            <img [src]="image" (click)="openVerticallyCentered(content)">
-          </div>
-          <p class="carousel-caption" *ngIf="i <= 3">Stage {{i+1}}</p>
-          <p class="carousel-caption" *ngIf="i > 3">{{costumeNames[i-4]}}</p>
-        </ng-template>
+        @for (image of servantImages; track image; let i = $index) {
+          <ng-template ngbSlide>
+            <div>
+              <img [src]="image" (click)="openVerticallyCentered(content)">
+            </div>
+            @if (i <= 3) {
+              <p class="carousel-caption">Stage {{i+1}}</p>
+            }
+            @if (i > 3) {
+              <p class="carousel-caption">{{costumeNames[i-4]}}</p>
+            }
+          </ng-template>
+        }
       </ngb-carousel>
     </div>
   </div>

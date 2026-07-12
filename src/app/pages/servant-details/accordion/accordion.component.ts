@@ -1,19 +1,21 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, Input, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { Function, Skill } from 'src/app/types/servant-type';
 import { DetailedServant } from './../../../types/servant-type';
 import { UtilsService } from './../../../utils/utils.service';
 
 @Component({
-  selector: 'app-accordion',
-  templateUrl: './accordion.component.html',
-  styleUrls: ['./accordion.component.css'],
+    selector: 'app-accordion',
+    templateUrl: './accordion.component.html',
+    styleUrls: ['./accordion.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class AccordionComponent implements OnInit {
   @Input() detailedServant!: DetailedServant;
   @Input() detailedServantEnglish!: DetailedServant;
-  appendSkillLevelControl = new FormControl('0');
-  activeSkillLevelControl = new FormControl('0');
+  appendSkillLevelControl = new UntypedFormControl('0');
+  activeSkillLevelControl = new UntypedFormControl('0');
   appendSkillLevel: Array<string> = [];
   activeSkillLevel: Array<string> = [];
   appendSkillModifyer: Array<number> = [300, 1000, 200];

@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ServantService } from '../../services/servant.service';
 import { SimpleServant } from '../../types/servant-type';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class DashboardComponent implements OnInit {
-  searchValue = new FormControl();
+  searchValue = new UntypedFormControl();
   options: SimpleServant[] = [];
   filteredOptions!: Observable<SimpleServant[]>;
   constructor(private servantService: ServantService) {

@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { UntypedFormControl } from '@angular/forms';
 import { ServantService } from '../../../services/servant.service';
 import { SimpleServant } from '../../../types/servant-type';
 
 @Component({
-  selector: 'app-teste',
-  templateUrl: './teste.component.html',
-  styleUrls: ['./teste.component.css'],
+    selector: 'app-teste',
+    templateUrl: './teste.component.html',
+    styleUrls: ['./teste.component.css'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class TesteComponent implements OnInit {
-  filterControl = new FormControl('aza');
+  filterControl = new UntypedFormControl('aza');
   servantList: SimpleServant[] = [];
   filteredServantList: SimpleServant[] = [];
 
