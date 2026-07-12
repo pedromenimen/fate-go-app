@@ -1,11 +1,11 @@
 @for (servant of filteredServantList | async; track servant) {
-  <mat-card class="example-card">
-    <div [routerLink]="['/servant-detail', servant.collectionNo]">
-      <img class="rounded" loading=lazy mat-card-image src={{servant.face}}>
-      <mat-card-content class="servant-name">
-        <p>
-          {{servant.name}}
-        </p>
+  <mat-card class="servant-card" appearance="outlined">
+    <div class="card-link" [routerLink]="['/servant-detail', servant.collectionNo]">
+      <div class="card-image-wrapper">
+        <img class="card-image" loading="lazy" [src]="servant.face" alt="{{servant.name}}">
+      </div>
+      <mat-card-content class="card-content">
+        <p class="card-name">{{servant.name}}</p>
       </mat-card-content>
     </div>
   </mat-card>

@@ -2,11 +2,42 @@
 
 @import "tailwindcss";
 
-html,
-body {
+html, body {
   height: 100%;
-}
-body {
   margin: 0;
+}
+
+body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: #0a0a0f;
+  color: #e0e0e0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(255, 215, 0, 0.3);
+  color: white;
 }

@@ -1,12 +1,18 @@
 <div class="dashboard-page">
-  <div class="example-form">
-    <mat-form-field class="example-full-width" appearance="outline" color="primary">
+  <div class="search-section">
+    <h1 class="dashboard-title">Servant Archive</h1>
+    <p class="dashboard-subtitle">Browse your collection of servants</p>
+    <mat-form-field class="search-field" appearance="outline" color="primary">
+      <mat-label>Search servant...</mat-label>
       <input type="text" matInput [formControl]="searchValue" [matAutocomplete]="auto"
-        placeholder="search servant...">
+        placeholder="Type a servant name...">
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
         @for (option of filteredOptions | async; track option) {
           <mat-option [value]="option">
-            {{option.name}}
+            <div class="option-content">
+              <img [src]="option.face" class="option-icon" alt="">
+              <span>{{option.name}}</span>
+            </div>
           </mat-option>
         }
       </mat-autocomplete>

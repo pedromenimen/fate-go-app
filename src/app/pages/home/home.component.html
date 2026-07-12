@@ -1,10 +1,19 @@
 <div class="home-page">
-    <div>
-        <h1 mat-dialog-title>Choose a server</h1>
-        <div mat-dialog-content>Server choice can interfere with the number of characters and language.</div>
-        <div mat-dialog-actions>
-            <button mat-button mat-dialog-close (click)="setServer('JP')" routerLink="dashboard">Japanese</button>
-            <button mat-button mat-dialog-close (click)="setServer('NA')" routerLink="dashboard">North American</button>
-        </div>
+  <div class="server-card">
+    <div class="server-card-glow"></div>
+    <h1 class="home-title">Fate/Grand Order</h1>
+    <p class="home-subtitle">Servant Archive</p>
+    <div class="divider"></div>
+    <p class="home-desc">Choose your server region to browse servant data</p>
+    <div class="server-buttons">
+      <button class="server-btn server-btn-jp" (click)="setServer('JP')" routerLink="/dashboard">
+        <span class="btn-label">Japan</span>
+        <span class="btn-region">JP Server</span>
+      </button>
+      <button class="server-btn server-btn-na" (click)="setServer('NA')" routerLink="/dashboard">
+        <span class="btn-label">North America</span>
+        <span class="btn-region">NA Server</span>
+      </button>
     </div>
+  </div>
 </div>
