@@ -10,4 +10,13 @@ import { SimpleServant } from '../../../types/servant-type';
 })
 export class CardComponent {
   @Input() filteredServantList: SimpleServant[] = [];
+  loadedImages = new Set<number>();
+
+  onImageLoad(collectionNo: number): void {
+    this.loadedImages.add(collectionNo);
+  }
+
+  isImageLoaded(collectionNo: number): boolean {
+    return this.loadedImages.has(collectionNo);
+  }
 }
