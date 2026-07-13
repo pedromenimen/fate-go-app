@@ -1,11 +1,137 @@
 import { Injectable } from '@angular/core';
-import { DetailedServant, Skill } from './../types/servant-type';
+import { DetailedServant, Sval, Skill } from './../types/servant-type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UtilsService {
   constructor() {}
+
+  /**
+   * Atlas Academy returns skill values as integers whose unit depends on the
+   * `funcType` of the function the placeholder refers to:
+   *   - addStateShort / addState (buff/debuff rates): Value is percent * 10
+   *       (e.g. 30% DEF up => Value 300). Divide by 10 to render as percent.
+   *   - gainNp / NP-charge: Value is percent * 100
+   *       (e.g. 20% NP charge => Value 2000). Divide by 100 to render.
+   *   - gainStar: Value is the raw star count (already in human units).
+   *   - hastenNpturn / other flat-count functions: Value is the raw number.
+   *
+   * When the funcType is unknown we fall back to a simple heuristic (multiple
+   * of 10 with 2+ digits => divide by 10 and show as percent; otherwise raw).
+   */
+  formatSkillSvalValue(value: number, funcType?: string): string {
+    const type = (funcType ?? '').toLowerCase();
+    if (type === 'gainstar' || type === 'hastennpturn' || type === 'hastennpturninline') {
+      return `${value}`;
+    }
+    if (type === 'gainnp' || type === 'gainnpfromtargets' || type === 'losenp') {
+      // NP values are stored as percent * 100 (Value 2000 => 20%).
+      return `${value / 100}%`;
+    }
+    if (
+      type === 'addstateshort' ||
+      type === 'addstate' ||
+      type === 'substateshort' ||
+      type === 'substate'
+    ) {
+      // Buff/debuff values are stored as percent * 10 (Value 300 => 30%).
+      // Some `addState` functions only carry a Count/Turn flag without an
+      // actual rate (e.g. Skill Reload's `Value: 1`); treat small values
+      // (< 10) as raw counts so we don't render them as fractional percents.
+      if (value < 10) {
+        return `${value}`;
+      }
+      return `${value / 10}%`;
+    }
+    // Fallback heuristic for unrecognised func types.
+    if (value >= 10 && value % 10 === 0) {
+      return `${value / 10}%`;
+    }
+    return `${value}`;
+  }
+
+  /**
+   * Replaces every `{N}` placeholder in a skill's `unmodifiedDetail` with the
+   * formatted value pulled from the matching `functions[N].svals[level].Value`.
+   *
+   * Atlas Academy skills may have multiple functions (e.g. Obscurant Wall of
+   * Chalk has addState + gainNp + hastenNpturn). The placeholder `{0}` refers
+   * to `functions[0].svals[level]`, `{1}` to `functions[1]`, etc. Not every
+   * function has a `Value` field, so we look up the next available numeric
+   * value when the requested function doesn't have one.
+   *
+   * Append/passive skills also contain Atlas Academy conditional placeholders
+   * like `{{N:Value:flag}}` (rendered server-side depending on the function's
+   * properties, never changes with level) and trailing `[{}]` brackets that
+   * the game client fills in conditionally. We strip both shapes so the
+   * remaining text is human-readable.
+   */
+  renderSkillDetail(skill: Skill, level: number): string {
+    let template = skill.unmodifiedDetail || skill.detail || '';
+    if (!template.includes('{')) {
+      return template;
+    }
+    // Atlas Academy append/passive skills use `{{N:Value:flag}}` placeholders
+    // (with a `:m`/`:y` suffix). They resolve to the value of
+    // `functions[N].svals[level].Value` formatted using `funcType`. We normalise
+    // them to plain `{N}` so the regex below can substitute them in the same
+    // pass.
+    template = template.replace(/\{\{(\d+):[^}]+\}\}/g, '{$1}');
+    // Strip trailing/leading `[{}]` brackets left over from funcquestText slots.
+    template = template.replace(/\[\{\}\]/g, '');
+
+    const functions = skill.functions ?? [];
+    // First pass: substitute `{N}` placeholders and, when the resolved value
+    // already ends with `%`, drop the matching literal `%` that some
+    // templates (Atlas Academy append skills) tack on immediately after the
+    // placeholder. This avoids the doubled-up `30%%` output we used to see.
+    return template.replace(/\{(\d+)\}(%)?/g, (_match, indexStr, trailingPct) => {
+      const funcIndex = parseInt(indexStr, 10);
+      const fn = functions[funcIndex];
+      let formatted: string;
+      if (fn) {
+        const sval: Sval | undefined = fn.svals?.[level];
+        if (sval && sval.Value !== undefined) {
+          formatted = this.formatSkillSvalValue(sval.Value, fn.funcType);
+        } else {
+          formatted = this.fallbackSiblingValue(functions, level);
+        }
+      } else {
+        // functions[N] missing — search siblings.
+        formatted = this.fallbackSiblingValue(functions, level);
+      }
+      // If the formatted value already carries a `%` and the template had a
+      // literal `%` next to the placeholder, drop the literal one to avoid
+      // `30%%`. Keep the template's `%` for raw values that don't already
+      // include one.
+      if (trailingPct && formatted.endsWith('%')) {
+        return formatted;
+      }
+      return trailingPct ? `${formatted}${trailingPct}` : formatted;
+    });
+  }
+
+  /**
+   * When a placeholder references `functions[N]` that doesn't exist (or has
+   * no numeric `Value` at the requested level), search sibling functions for
+   * any sval with a numeric `Value` at the same level and reuse it. Used by
+   * `renderSkillDetail` for Atlas Academy append/passive skills that
+   * reference out-of-range function indices.
+   */
+  private fallbackSiblingValue(functions: any[], level: number): string {
+    for (const candidate of functions) {
+      const sv = candidate.svals?.[level];
+      if (sv && sv.Value !== undefined) {
+        return this.formatSkillSvalValue(sv.Value, candidate.funcType);
+      }
+    }
+    return '';
+  }
+
+  getSkillCooldown(skill: Skill, level: number): number {
+    return skill.coolDown?.[level] ?? 0;
+  }
 
   getCostumeNames(servantDetailedInfo: DetailedServant): string[] {
     if (Object.keys(servantDetailedInfo.profile.costume).length > 0) {
@@ -19,34 +145,37 @@ export class UtilsService {
     return [];
   }
 
-  getServantImages(servantDetailedInfo: DetailedServant): string[] | unknown[] {
+  getServantImages(servantDetailedInfo: DetailedServant): string[] {
     const ascensionImages = Object.values(
-      servantDetailedInfo.extraAssets.charaGraph.ascension
+      servantDetailedInfo.extraAssets.charaGraph.ascension ?? {}
     );
-    var servantImages: string[] | unknown[] = [];
-    servantImages = [...ascensionImages];
-    Object.keys(servantDetailedInfo.extraAssets.charaGraph).includes('costume')
-      ? (servantImages = [
-          ...servantImages,
-          ...Object.values(servantDetailedInfo.extraAssets.charaGraph.costume),
-        ])
-      : null;
-    return servantImages;
+    const costumeImages = Object.values(
+      servantDetailedInfo.extraAssets.charaGraph.costume ?? {}
+    );
+    return [...ascensionImages, ...costumeImages];
   }
 
   getServantActiveSkills(
     detailedServant: DetailedServant,
     detailedServantEnglish: DetailedServant
   ): Array<Skill> {
-    if (detailedServant.skills.length > detailedServantEnglish.skills.length) {
-      let englishSkills = detailedServantEnglish.skills;
-      let japanese_skills = detailedServant.skills.splice(
-        detailedServantEnglish.skills.length,
-        detailedServant.skills.length - detailedServantEnglish.skills.length
-      );
-      return [...new Set([...englishSkills, ...japanese_skills])];
-    } else {
-      return detailedServantEnglish.skills;
+    // Prefer the English version when present; otherwise fall back to the main payload.
+    const source = detailedServantEnglish?.skills?.length
+      ? detailedServantEnglish
+      : detailedServant;
+
+    // The API returns skill strengthenings as additional entries that share the
+    // same `num` as their base skill (num 1/2/3). We only want the base version
+    // of each active skill, so we keep the first occurrence of every `num`.
+    const seen = new Set<number>();
+    const baseActives: Skill[] = [];
+    for (const skill of source.skills ?? []) {
+      if (skill.type !== 'active') continue;
+      if (seen.has(skill.num)) continue;
+      seen.add(skill.num);
+      baseActives.push(skill);
     }
+
+    return baseActives.sort((a, b) => a.num - b.num);
   }
 }
