@@ -110,7 +110,7 @@
   object-fit: cover;
 }
 
-/* Controls panel — glass card matching search section */
+/* Controls panel — dark glass card */
 .controls-panel {
   display: flex;
   align-items: center;
@@ -118,14 +118,21 @@
   width: 90%;
   max-width: 600px;
   padding: 12px 20px;
-  margin: 0 auto 12px;
   flex-wrap: wrap;
   gap: 10px;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.15);
   border-radius: 12px;
+}
+
+.top-controls {
+  margin-bottom: 12px;
+}
+
+.bottom-controls {
+  margin: 4px auto 12px;
 }
 
 .page-info {
@@ -145,11 +152,11 @@
   margin-right: 4px;
 }
 
-/* Glass buttons — matching search input palette */
+/* Dark glass buttons — matching search input palette */
 .glass-btn {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   padding: 6px 14px;
   font-size: 13px;
@@ -167,13 +174,13 @@
 }
 
 .glass-btn:hover:not(.disabled):not(.active) {
-  background: rgba(255, 215, 0, 0.12);
+  background: rgba(255, 215, 0, 0.15);
   color: #ffd700;
-  border-color: rgba(255, 215, 0, 0.3);
+  border-color: rgba(255, 215, 0, 0.35);
 }
 
 .glass-btn.active {
-  background: rgba(255, 215, 0, 0.2);
+  background: rgba(255, 215, 0, 0.22);
   color: #ffd700;
   border-color: #ffd700;
   font-weight: 600;
@@ -181,11 +188,11 @@
 
 .glass-btn.disabled,
 .glass-btn:disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
-/* Pagination - same glass look */
+/* Pagination */
 .pagination {
   display: flex;
   align-items: center;

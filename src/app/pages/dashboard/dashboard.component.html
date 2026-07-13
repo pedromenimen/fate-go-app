@@ -19,10 +19,26 @@
     </mat-form-field>
   </div>
 
+  @if (!loading) {
+    <div class="controls-panel top-controls">
+      <div class="page-info">
+        Showing {{pagedServants.length}} of {{filteredServants.length}} servants
+      </div>
+      <div class="page-size-selector">
+        <span class="page-size-label">Per page:</span>
+        @for (size of pageSizeOptions; track size) {
+          <button class="glass-btn glass-btn-sm" [class.active]="pageSize === size" (click)="setPageSize(size)">
+            {{size}}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
   <app-card class="card-container" [filteredServantList]="pagedServants" [loading]="loading" [skeletonCount]="pageSize"></app-card>
 
   @if (!loading) {
-    <div class="controls-panel">
+    <div class="controls-panel bottom-controls">
       <div class="page-info">
         Showing {{pagedServants.length}} of {{filteredServants.length}} servants
       </div>
