@@ -93,23 +93,29 @@ export interface Ascension {
   [key: string]: string;
 }
 
+// `extraAssets.charaGraph.costume` (and friends) maps costume id -> image URL,
+// which is just a string. `profile.costume` is a different shape (an object
+// with metadata), so we keep the original `Costume` interface for that one.
+export interface CostumeAssetMap {
+  [key: string]: string;
+}
 export interface CostumeImage extends Ascension {}
 export interface Story extends Ascension {}
 
 export interface ExtraAssets {
   charaGraph: {
     ascension: Ascension;
-    costume: Costume;
+    costume: CostumeAssetMap;
   };
   faces: {
     ascension: Ascension;
-    costume: Costume;
+    costume: CostumeAssetMap;
   };
   charaGraphEx: {};
   charaGraphName: {};
   narrowFigure: {
     ascension: Ascension;
-    costume: Costume;
+    costume: CostumeAssetMap;
   };
   charaFigure: {
     ascension: {};
