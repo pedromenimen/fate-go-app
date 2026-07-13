@@ -110,7 +110,7 @@
   object-fit: cover;
 }
 
-/* Controls panel — dark glass card */
+/* Controls panel */
 .controls-panel {
   display: flex;
   align-items: center;
@@ -120,15 +120,11 @@
   padding: 12px 20px;
   flex-wrap: wrap;
   gap: 10px;
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(15, 15, 20, 0.85);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 215, 0, 0.15);
   border-radius: 12px;
-}
-
-.top-controls {
-  margin-bottom: 12px;
 }
 
 .bottom-controls {
@@ -152,11 +148,11 @@
   margin-right: 4px;
 }
 
-/* Dark glass buttons — matching search input palette */
+/* Dark opaque buttons */
 .glass-btn {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(30, 30, 35, 0.9);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
   padding: 6px 14px;
   font-size: 13px;
@@ -192,12 +188,27 @@
   cursor: not-allowed;
 }
 
-/* Pagination */
+/* Pagination — dark background */
 .pagination {
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 0 24px 40px;
+  padding: 10px 20px;
   flex-wrap: wrap;
   justify-content: center;
+  background: rgba(15, 15, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 12px;
+  width: auto;
+}
+
+.top-pagination {
+  margin-bottom: 12px;
+}
+
+.bottom-pagination {
+  margin-top: 0;
+  margin-bottom: 12px;
 }
