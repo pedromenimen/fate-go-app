@@ -1,40 +1,126 @@
 <div class="servant-details-page">
-  <div>
-    <h1>{{servantDetailedInfo?.name}}</h1>
+  <div class="details-card">
+    @if (loadingInfo) {
+      <div class="skeleton-title shimmer"></div>
+    } @else {
+      <h1 class="details-title">{{servantDetailedInfo?.name}}</h1>
+    }
     <div class="servant-container">
 
-      <app-accordion [detailedServant]="servantDetailedInfo" [detailedServantEnglish]="servantDetailedEnglishInfo">
-      </app-accordion>
+      @if (loadingInfo || loadingEnglish) {
+        <div class="accordion-skeleton">
+          <div class="skeleton-panel shimmer">
+            <div class="skeleton-panel-label"></div>
+          </div>
+          <div class="skeleton-panel shimmer">
+            <div class="skeleton-panel-label"></div>
+            <div class="skeleton-skill-list">
+              <div class="skeleton-skill">
+                <div class="skeleton-skill-icon shimmer"></div>
+                <div class="skeleton-skill-text">
+                  <div class="skeleton-line line-name shimmer"></div>
+                  <div class="skeleton-line line-detail shimmer"></div>
+                  <div class="skeleton-line line-detail short shimmer"></div>
+                </div>
+              </div>
+              <div class="skeleton-skill">
+                <div class="skeleton-skill-icon shimmer"></div>
+                <div class="skeleton-skill-text">
+                  <div class="skeleton-line line-name shimmer"></div>
+                  <div class="skeleton-line line-detail shimmer"></div>
+                  <div class="skeleton-line line-detail short shimmer"></div>
+                </div>
+              </div>
+              <div class="skeleton-skill">
+                <div class="skeleton-skill-icon shimmer"></div>
+                <div class="skeleton-skill-text">
+                  <div class="skeleton-line line-name shimmer"></div>
+                  <div class="skeleton-line line-detail shimmer"></div>
+                  <div class="skeleton-line line-detail short shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="skeleton-panel shimmer">
+            <div class="skeleton-panel-label"></div>
+            <div class="skeleton-skill-list">
+              <div class="skeleton-skill">
+                <div class="skeleton-skill-icon shimmer"></div>
+                <div class="skeleton-skill-text">
+                  <div class="skeleton-line line-name shimmer"></div>
+                  <div class="skeleton-line line-detail shimmer"></div>
+                  <div class="skeleton-line line-detail short shimmer"></div>
+                </div>
+              </div>
+              <div class="skeleton-skill">
+                <div class="skeleton-skill-icon shimmer"></div>
+                <div class="skeleton-skill-text">
+                  <div class="skeleton-line line-name shimmer"></div>
+                  <div class="skeleton-line line-detail shimmer"></div>
+                  <div class="skeleton-line line-detail short shimmer"></div>
+                </div>
+              </div>
+              <div class="skeleton-skill">
+                <div class="skeleton-skill-icon shimmer"></div>
+                <div class="skeleton-skill-text">
+                  <div class="skeleton-line line-name shimmer"></div>
+                  <div class="skeleton-line line-detail shimmer"></div>
+                  <div class="skeleton-line line-detail short shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <app-accordion [detailedServant]="servantDetailedInfo" [detailedServantEnglish]="servantDetailedEnglishInfo">
+        </app-accordion>
+      }
+
       <ng-template #content>
         <div>
-          <ngb-carousel id="carousel-modal" [showNavigationArrows]="true" [animation]="false" [pauseOnHover]="true"
-            [interval]="99999999999" [wrap]="true">
-            @for (image of servantImages; track image; let i = $index) {
-              <ng-template ngbSlide>
-                <div>
-                  <img [src]="image">
-                </div>
-              </ng-template>
-            }
-          </ngb-carousel>
+          @if (loadingInfo) {
+            <div class="modal-skeleton">
+              <div class="skeleton-modal-img shimmer"></div>
+            </div>
+          } @else {
+            <ngb-carousel id="carousel-modal" [showNavigationArrows]="true" [showNavigationIndicators]="!immersiveMode" [animation]="false" [pauseOnHover]="true"
+              [interval]="99999999999" [wrap]="true">
+              @for (image of servantImages; track image; let i = $index) {
+                <ng-template ngbSlide>
+                  <div class="modal-slide">
+                    <img [src]="image" (click)="toggleImmersiveMode()">
+                    @if (!immersiveMode) {
+                      @if (i <= 3) {
+                        <p class="modal-caption">Stage {{i+1}}</p>
+                      }
+                      @if (i > 3) {
+                        <p class="modal-caption">{{costumeNames[i-4]}}</p>
+                      }
+                    }
+                  </div>
+                </ng-template>
+              }
+            </ngb-carousel>
+          }
         </div>
       </ng-template>
-      <ngb-carousel [showNavigationArrows]="false" [showNavigationIndicators]="false" [pauseOnHover]="true"
-        class="carousel-page">
-        @for (image of servantImages; track image; let i = $index) {
-          <ng-template ngbSlide>
-            <div>
-              <img [src]="image" (click)="openVerticallyCentered(content)">
-            </div>
-            @if (i <= 3) {
-              <p class="carousel-caption">Stage {{i+1}}</p>
-            }
-            @if (i > 3) {
-              <p class="carousel-caption">{{costumeNames[i-4]}}</p>
-            }
-          </ng-template>
-        }
-      </ngb-carousel>
+
+      @if (loadingInfo) {
+        <div class="carousel-skeleton carousel-page">
+          <div class="skeleton-thumb shimmer"></div>
+        </div>
+      } @else {
+        <ngb-carousel [showNavigationArrows]="false" [showNavigationIndicators]="false" [pauseOnHover]="true"
+          class="carousel-page">
+          @for (image of servantImages; track image; let i = $index) {
+            <ng-template ngbSlide>
+              <div class="page-slide">
+                <img [src]="image" (click)="openVerticallyCentered(content)">
+              </div>
+            </ng-template>
+          }
+        </ngb-carousel>
+      }
     </div>
   </div>
 </div>

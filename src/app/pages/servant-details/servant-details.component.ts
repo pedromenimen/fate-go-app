@@ -18,6 +18,9 @@ export class ServantDetailsComponent implements OnInit {
   servantImages!: Array<string> | Array<unknown>;
   costumeNames: string[] = [];
   servantDetailedEnglishInfo!: DetailedServant;
+  immersiveMode: boolean = false;
+  loadingInfo: boolean = true;
+  loadingEnglish: boolean = true;
 
   constructor(
     private servantService: ServantService,
@@ -32,7 +35,10 @@ export class ServantDetailsComponent implements OnInit {
     });
     this.servantService.getDetailedSevantInfo(this.servantId).subscribe({
       next: (servantInfo) => (this.servantDetailedInfo = servantInfo),
-      error: (err) => console.log(err),
+      error: (err) => {
+        console.log(err);
+        this.loadingInfo = false;
+      },
       complete: () => {
         this.costumeNames = this.utilsService.getCostumeNames(
           this.servantDetailedInfo
@@ -40,18 +46,29 @@ export class ServantDetailsComponent implements OnInit {
         this.servantImages = this.utilsService.getServantImages(
           this.servantDetailedInfo
         );
+        this.loadingInfo = false;
       },
     });
     this.servantService.getDetailedInfoEnglish(this.servantId).subscribe({
-      next: (servantInfo) => (this.servantDetailedEnglishInfo = servantInfo),
+      next: (servantInfo) => {
+        this.servantDetailedEnglishInfo = servantInfo;
+        this.loadingEnglish = false;
+      },
       error: (err) => {
         console.log(err);
+        this.loadingEnglish = false;
       },
-      complete: () => {},
+      complete: () => {
+        this.loadingEnglish = false;
+      },
     });
   }
   openVerticallyCentered(content: TemplateRef<any>) {
+    this.immersiveMode = false;
     this.modalService.open(content, { size: 'lg' });
+  }
+  toggleImmersiveMode() {
+    this.immersiveMode = !this.immersiveMode;
   }
   popoverFunc(i: number) {
     if (i <= 3) {

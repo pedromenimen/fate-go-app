@@ -5,15 +5,17 @@
         Personal info
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <p>Original name: {{detailedServant?.originalName}}</p>
-    <p>Class: {{detailedServant?.className}}</p>
-    <p>Type: {{detailedServant?.type}}</p>
-    <p>Flag: {{detailedServant?.flag}}</p>
-    <p>Rarity: {{detailedServant?.rarity}}</p>
-    <p>Cost: {{detailedServant?.cost}}</p>
-    <p>Max level: {{detailedServant?.lvMax}}</p>
-    <p>Gender: {{detailedServant?.gender}}</p>
-    <p>Atribute: {{detailedServant?.attribute}}</p>
+    <div class="info-grid">
+      <p><strong>Original name:</strong> {{detailedServant?.originalName}}</p>
+      <p><strong>Class:</strong> {{detailedServant?.className}}</p>
+      <p><strong>Type:</strong> {{detailedServant?.type}}</p>
+      <p><strong>Flag:</strong> {{detailedServant?.flag}}</p>
+      <p><strong>Rarity:</strong> {{detailedServant?.rarity}}</p>
+      <p><strong>Cost:</strong> {{detailedServant?.cost}}</p>
+      <p><strong>Max level:</strong> {{detailedServant?.lvMax}}</p>
+      <p><strong>Gender:</strong> {{detailedServant?.gender}}</p>
+      <p><strong>Attribute:</strong> {{detailedServant?.attribute}}</p>
+    </div>
   </mat-expansion-panel>
   <mat-expansion-panel>
     <mat-expansion-panel-header>

@@ -7,6 +7,30 @@ html, body {
   margin: 0;
 }
 
+/* Shimmer skeleton animation (shared across pages) */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  animation: shimmer-slide 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   background: #0a0a0f;
@@ -40,4 +64,37 @@ html {
 ::selection {
   background: rgba(255, 215, 0, 0.3);
   color: white;
+}
+
+.page-slide {
+  position: relative;
+  background: black;
+}
+
+/* Servant details carousel - responsive override */
+@media (max-width: 760px) {
+  .carousel-page {
+    max-width: 100% !important;
+    width: 100% !important;
+    align-self: stretch !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+  }
+  .carousel-page .carousel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .carousel-page .carousel-inner {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .carousel-page img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 280px;
+    object-fit: contain !important;
+    display: block !important;
+  }
 }

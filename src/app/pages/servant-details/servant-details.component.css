@@ -1,52 +1,490 @@
 .servant-details-page {
   min-height: 100vh;
-  max-height: fit-content;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 50px 16px;
+  box-sizing: border-box;
+}
+
+.details-card {
+  width: min(1100px, 95vw);
+  background: rgba(15, 15, 20, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 18px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
+  padding: 28px 32px;
+  color: #e8e8e8;
+}
+
+.details-title {
+  margin: 0 0 6px;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  text-shadow: 0 0 24px rgba(255, 215, 0, 0.15);
+}
+
+/* Skeleton blocks */
+.skeleton-title {
+  height: 32px;
+  width: 320px;
+  max-width: 80%;
+  margin: 0 auto 6px;
+  border-radius: 8px;
+  background: rgba(255, 215, 0, 0.14);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+}
+
+.accordion-skeleton {
+  flex: 1 1 600px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-panel {
+  min-height: 56px;
+  width: 100%;
+  border-radius: 10px;
+  background: rgba(255, 215, 0, 0.10);
+  border: 1px solid rgba(255, 215, 0, 0.22);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-panel-label {
+  height: 16px;
+  width: 140px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.skeleton-skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.skeleton-skill {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.skeleton-skill-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  flex-shrink: 0;
+}
+
+.skeleton-skill-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 4px;
+}
+
+.skeleton-line {
+  height: 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.skeleton-line.line-name {
+  height: 14px;
+  width: 45%;
+  background: rgba(255, 215, 0, 0.55);
+}
+
+.skeleton-line.line-detail {
+  width: 100%;
+}
+
+.skeleton-line.short {
+  width: 70%;
+}
+
+.carousel-skeleton {
+  max-width: 220px;
+  width: 220px;
+  flex-shrink: 0;
+  align-self: flex-start;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.skeleton-thumb {
+  width: 100%;
+  aspect-ratio: 0.707;
+  border-radius: 10px;
+  background: rgba(255, 215, 0, 0.18);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+}
+
+.modal-skeleton {
+  width: 60vw;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skeleton-modal-img {
+  width: 100%;
+  height: 60vh;
+  max-height: 600px;
+  border-radius: 12px;
+  background: rgba(255, 215, 0, 0.10);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+}
+
+.servant-container {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  padding: 20px;
+  border-radius: 14px;
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.carousel-page {
+  max-width: 220px;
+  width: 220px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+::ng-deep .carousel-page .page-slide {
+  position: relative;
+  background: black;
+}
+
+::ng-deep .carousel-page img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+app-accordion {
+  flex: 1 1 600px;
+  min-width: 0;
+}
+
+::ng-deep ngb-carousel {
+  flex-grow: 0;
+}
+
+::ng-deep .carousel-page {
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 12px;
+  padding: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+::ng-deep .carousel-page .carousel-inner {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  background: black;
+}
+
+::ng-deep .carousel-page img {
+  cursor: pointer;
+  border-radius: 10px;
+  transition: transform 0.25s ease;
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+::ng-deep .carousel-page img:hover {
+  transform: scale(1.04);
+}
+
+::ng-deep .carousel-page .page-slide {
+  position: relative;
+  background: black;
+}
+
+::ng-deep .carousel-page .carousel-caption {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px 16px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 8px;
+  color: #ffd700;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(6px);
+  z-index: 5;
+  max-width: calc(100% - 16px);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.carousel-caption {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px 16px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 8px;
+  color: #ffd700;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(6px);
+  z-index: 5;
+  max-width: calc(100% - 16px);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#carousel-modal {
+  width: fit-content;
+  align-self: center;
+}
+
+/* Modal styling */
+::ng-deep .modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+::ng-deep .modal-backdrop.show {
+  opacity: 1 !important;
+}
+
+::ng-deep .modal {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+::ng-deep .modal-dialog {
+  margin: auto !important;
+  max-width: 95vw !important;
+}
+
+::ng-deep .modal-content {
+  background: rgba(15, 15, 20, 0.96) !important;
+  border: 1px solid rgba(255, 215, 0, 0.35) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7) !important;
+  overflow: hidden;
+}
+
+::ng-deep .modal-body {
+  padding: 16px !important;
+  background: rgba(15, 15, 20, 0.96);
   display: flex;
   justify-content: center;
 }
 
-.servant-details-page > div {
+::ng-deep #carousel-modal {
+  width: 60vw !important;
+  max-width: 900px;
+  align-self: center !important;
+  transform: none !important;
+  left: auto !important;
+  position: relative;
+}
+
+::ng-deep #carousel-modal .carousel-inner {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  background: black;
+}
+
+::ng-deep #carousel-modal img {
+  width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  display: block;
+}
+
+::ng-deep #carousel-modal .modal-slide {
+  position: relative;
+  background: black;
+}
+
+::ng-deep #carousel-modal .modal-caption {
   position: absolute;
-  width: 80vw;
-  margin: 50px 150px;
-  background-color: white;
-  opacity: 0.95;
-  padding: 20px;
-  border-radius: 8px;
-  height: auto;
-}
-
-.carousel-page {
-  max-width: 150px;
-}
-
-.servant-container {
-  background-color: gray;
-  padding: 15px;
-  border-radius: 15px;
-  max-width: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  height: auto;
-}
-.carousel-caption {
-  position: unset;
-}
-
-app-accordion {
-  flex-grow: 1;
-  margin-right: 15px;
-}
-ngb-carousel {
-  flex-grow: 0;
-}
-
-#carousel-modal {
-  width: 60vw;
-  align-self: center;
-  width: fit-content;
-  transform: translateX(-50%);
+  top: 16px;
   left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px 16px;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 8px;
+  color: #ffd700;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(6px);
+  z-index: 5;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+::ng-deep #carousel-modal .modal-slide {
+  position: relative;
+  background: black;
+}
+
+::ng-deep #carousel-modal .modal-slide .modal-caption {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+::ng-deep #carousel-modal .carousel-indicators {
+  bottom: 8px;
+  margin-bottom: 0;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+::ng-deep #carousel-modal .carousel-indicators li {
+  background-color: rgba(255, 215, 0, 0.4);
+  border: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 0 4px;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+::ng-deep #carousel-modal .carousel-indicators li.active {
+  background-color: #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  transform: scale(1.2);
+}
+
+::ng-deep #carousel-modal .carousel-control-prev,
+::ng-deep #carousel-modal .carousel-control-next {
+  width: 50px;
+  opacity: 0.85;
+  transition: opacity 0.25s ease;
+}
+
+::ng-deep #carousel-modal .carousel-control-prev:hover,
+::ng-deep #carousel-modal .carousel-control-next:hover {
+  opacity: 1;
+}
+
+::ng-deep #carousel-modal .carousel-control-prev-icon,
+::ng-deep #carousel-modal .carousel-control-next-icon {
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+::ng-deep #carousel-modal .carousel-control-prev-icon::before,
+::ng-deep #carousel-modal .carousel-control-next-icon::before {
+  width: 32px;
+  height: 32px;
+  background-size: 100% 100%;
+  filter: invert(79%) sepia(60%) saturate(638%) hue-rotate(5deg) brightness(105%) contrast(105%);
+}
+
+::ng-deep #carousel-modal .carousel-control-prev:hover .carousel-control-prev-icon,
+::ng-deep #carousel-modal .carousel-control-next:hover .carousel-control-next-icon {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+}
+
+/* Responsive */
+@media (max-width: 760px) {
+  .servant-details-page {
+    padding: 24px 12px;
+    align-items: stretch;
+  }
+  .details-card {
+    padding: 20px 16px;
+    width: 100%;
+  }
+  .details-title {
+    font-size: 24px;
+  }
+  .servant-container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px;
+    gap: 14px;
+  }
+  app-accordion,
+  ::ng-deep app-accordion {
+    flex: 1 1 auto;
+    width: 100%;
+    display: block;
+  }
+  .carousel-page,
+  ::ng-deep .carousel-page {
+    max-width: 100% !important;
+    width: 100% !important;
+    align-self: stretch !important;
+    box-sizing: border-box !important;
+    margin: 0 auto !important;
+  }
+  ::ng-deep .carousel-page .carousel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  ::ng-deep .carousel-page .carousel-inner {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  ::ng-deep .carousel-page img {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 280px;
+    object-fit: contain !important;
+    display: block !important;
+  }
 }

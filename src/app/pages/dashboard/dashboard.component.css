@@ -212,3 +212,58 @@
   margin-top: 0;
   margin-bottom: 12px;
 }
+
+/* Skeleton placeholders for pagination/controls */
+.skeleton-btn {
+  min-width: 38px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  flex: 0 0 auto;
+}
+
+.skeleton-label {
+  height: 14px;
+  width: 60px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  margin-right: 4px;
+}
+
+.pagination-skeleton,
+.controls-panel-skeleton {
+  background: rgba(15, 15, 20, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: 12px;
+}
+
+.controls-panel-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  animation: shimmer-slide 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}

@@ -1,7 +1,6 @@
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -39,7 +38,6 @@ import { ServantDetailsComponent } from './pages/servant-details/servant-details
         MatFormFieldModule,
         MatCardModule,
         MatButtonModule,
-        MatAutocompleteModule,
         MatInputModule,
         ReactiveFormsModule,
         NgbModule,

@@ -4,22 +4,22 @@
     <p class="dashboard-subtitle">Browse your collection of servants</p>
     <mat-form-field class="search-field" appearance="outline" color="primary">
       <mat-label>Search servant...</mat-label>
-      <input type="text" matInput [formControl]="searchValue" [matAutocomplete]="auto"
+      <input type="text" matInput [formControl]="searchValue"
         placeholder="Type a servant name...">
-      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-        @for (option of filteredServants.slice(0, 50); track option.collectionNo) {
-          <mat-option [value]="option">
-            <div class="option-content">
-              <img [src]="option.face" class="option-icon" alt="">
-              <span>{{option.name}}</span>
-            </div>
-          </mat-option>
-        }
-      </mat-autocomplete>
     </mat-form-field>
   </div>
 
-  @if (!loading) {
+  @if (loading) {
+    <div class="pagination top-pagination pagination-skeleton">
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+    </div>
+  } @else {
     <div class="pagination top-pagination">
       <button class="glass-btn" [class.disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
         ‹ Prev
@@ -37,7 +37,25 @@
 
   <app-card class="card-container" [filteredServantList]="pagedServants" [loading]="loading" [skeletonCount]="pageSize"></app-card>
 
-  @if (!loading) {
+  @if (loading) {
+    <div class="controls-panel bottom-controls controls-panel-skeleton">
+      <div class="skeleton-label shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+    </div>
+
+    <div class="pagination bottom-pagination pagination-skeleton">
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+      <div class="skeleton-btn shimmer"></div>
+    </div>
+  } @else {
     <div class="controls-panel bottom-controls">
       <div class="page-size-selector">
         <span class="page-size-label">Per page:</span>
