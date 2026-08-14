@@ -4,6 +4,11 @@ import { Function, Skill } from 'src/app/types/servant-type';
 import { DetailedServant } from './../../../types/servant-type';
 import { UtilsService } from './../../../utils/utils.service';
 
+interface ActiveSkillGroup {
+  num: number;
+  versions: Skill[];
+}
+
 @Component({
     selector: 'app-accordion',
     templateUrl: './accordion.component.html',
@@ -15,31 +20,28 @@ export class AccordionComponent implements OnInit {
   @Input() detailedServant!: DetailedServant;
   @Input() detailedServantEnglish!: DetailedServant;
   options: Array<number> = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  activeSkills: Array<Skill> = [];
-  appendSkills: Array<Skill> = [];
-  // One form control per active skill so each select has independent state
-  // and we can react to its `(change)` event with the right index.
+
+  activeSkillGroups: ActiveSkillGroup[] = [];
+  appendSkills: Skill[] = [];
+
   activeSkillControls: UntypedFormControl[] = [];
-  // Same idea for append (passive) skills.
+  activeVersionControls: UntypedFormControl[] = [];
   appendSkillControls: UntypedFormControl[] = [];
+
   constructor(private utilsService: UtilsService) {}
+
   ngOnInit(): void {}
+
   ngOnChanges() {
     if (this.detailedServant?.id && this.detailedServantEnglish?.id) {
-      const activeSkills = this.utilsService.getServantActiveSkills(
+      const groups = this.utilsService.getServantActiveSkillGroups(
         this.detailedServant,
         this.detailedServantEnglish
       );
-      this.activeSkills = activeSkills;
-      // Reset the per-skill form controls whenever the active skill set changes
-      // (i.e. when the user navigates between servants).
-      this.activeSkillControls = activeSkills.map(
-        () => new UntypedFormControl('0')
-      );
+      this.activeSkillGroups = groups;
+      this.activeSkillControls = groups.map(() => new UntypedFormControl('0'));
+      this.activeVersionControls = groups.map(() => new UntypedFormControl(0));
 
-      // Append skills come wrapped in { skill: {...}, unlockMaterials: [...] }.
-      // The English payload may carry translated names/details — prefer it when
-      // available.
       const englishSource =
         this.detailedServantEnglish?.appendPassive?.length
           ? this.detailedServantEnglish
@@ -54,33 +56,39 @@ export class AccordionComponent implements OnInit {
   }
 
   changeAppendSkillLevel(index: number) {
-    // The form control already holds the new value; we just trigger a
-    // re-render by reading it back. Kept as a hook for future side-effects.
     this.appendSkillControls[index].value;
   }
 
   changeActiveSkillLevel(index: number) {
-    // The form control already holds the new value; we just trigger a
-    // re-render by reading it back. Kept as a hook for future side-effects.
     this.activeSkillControls[index].value;
   }
 
-  getActiveSkillLevel(index: number): number {
-    const value = this.activeSkillControls[index]?.value ?? '0';
+  changeActiveVersion(groupIndex: number) {
+    this.activeVersionControls[groupIndex].value;
+  }
+
+  getActiveSkill(groupIndex: number): Skill {
+    const group = this.activeSkillGroups[groupIndex];
+    const versionIndex = this.activeVersionControls[groupIndex]?.value ?? 0;
+    return group.versions[versionIndex] ?? group.versions[0];
+  }
+
+  getActiveSkillLevel(groupIndex: number): number {
+    const value = this.activeSkillControls[groupIndex]?.value ?? '0';
     return parseInt(value, 10) || 0;
   }
 
-  getActiveSkillDetail(skill: Skill, index: number): string {
+  getActiveSkillDetail(groupIndex: number): string {
     return this.utilsService.renderSkillDetail(
-      skill,
-      this.getActiveSkillLevel(index)
+      this.getActiveSkill(groupIndex),
+      this.getActiveSkillLevel(groupIndex)
     );
   }
 
-  getActiveSkillCooldown(skill: Skill, index: number): number {
+  getActiveSkillCooldown(groupIndex: number): number {
     return this.utilsService.getSkillCooldown(
-      skill,
-      this.getActiveSkillLevel(index)
+      this.getActiveSkill(groupIndex),
+      this.getActiveSkillLevel(groupIndex)
     );
   }
 
@@ -94,6 +102,10 @@ export class AccordionComponent implements OnInit {
       skill,
       this.getAppendSkillLevel(index)
     );
+  }
+
+  getVersionLabel(skill: Skill): string {
+    return skill.name;
   }
 
   getEnglishInfo() {

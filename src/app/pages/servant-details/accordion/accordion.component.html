@@ -54,20 +54,36 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div class="skills-container">
-      @for (skill of activeSkills; track skill.id; let i = $index) {
+      @for (group of activeSkillGroups; track group.num; let gi = $index) {
         <div class="skill">
-          <div class="skill-image"><img src={{skill.icon}} alt=""></div>
+          <div class="skill-image"><img [src]="getActiveSkill(gi).icon" alt=""></div>
           <div class="skill-info">
             <div class="detail">
-              <h3 class="skill-name">{{skill.name}}</h3>
-              <p class="skill-detail">{{getActiveSkillDetail(skill, i)}}</p>
-              <p class="skill-cooldown">Cooldown: {{getActiveSkillCooldown(skill, i)}} turns</p>
+              @if (group.versions.length > 1) {
+                <div class="version-tabs" role="tablist" [attr.aria-label]="'Skill versions for slot ' + group.num">
+                  @for (version of group.versions; track version.id; let vi = $index) {
+                    <button
+                      type="button"
+                      role="tab"
+                      class="version-tab"
+                      [class.active]="(activeVersionControls[gi]?.value ?? 0) === vi"
+                      [attr.aria-selected]="(activeVersionControls[gi]?.value ?? 0) === vi"
+                      (click)="activeVersionControls[gi].setValue(vi)">
+                      {{getVersionLabel(version)}}
+                    </button>
+                  }
+                </div>
+              } @else {
+                <h3 class="skill-name">{{getActiveSkill(gi).name}}</h3>
+              }
+              <p class="skill-detail">{{getActiveSkillDetail(gi)}}</p>
+              <p class="skill-cooldown">Cooldown: {{getActiveSkillCooldown(gi)}} turns</p>
             </div>
             <div class="skill-level">
               <p>Skill level</p>
-              <select name="levels" attr.id="active-skill-{{i+1}}"
-                [formControl]="activeSkillControls[i]"
-                (change)="changeActiveSkillLevel(i)">
+              <select name="levels" attr.id="active-skill-{{gi+1}}"
+                [formControl]="activeSkillControls[gi]"
+                (change)="changeActiveSkillLevel(gi)">
                 @for (option of options; track option) {
                   <option [value]="option">{{option+1}}</option>
                 }

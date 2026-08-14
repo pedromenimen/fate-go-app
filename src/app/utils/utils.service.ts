@@ -61,31 +61,35 @@ export class UtilsService {
    * function has a `Value` field, so we look up the next available numeric
    * value when the requested function doesn't have one.
    *
-   * Append/passive skills also contain Atlas Academy conditional placeholders
-   * like `{{N:Value:flag}}` (rendered server-side depending on the function's
-   * properties, never changes with level) and trailing `[{}]` brackets that
-   * the game client fills in conditionally. We strip both shapes so the
-   * remaining text is human-readable.
+   * Atlas Academy templates include several conditional shapes that don't add
+   * meaning once the value is substituted:
+   *   - `{{N:Value:flag}}` (e.g. `{{1:Value:m}}`) — the `:flag` is a server-side
+   *     rendering hint. We collapse these to plain `{N}` before substitution.
+   *   - `[N]` / `[N,m]` bracketed suffixes tied to a function index; the
+   *     brackets wrap a copy of the value with a conditional multiplier flag.
+   *     The simple `[N]` form is removed (the value already appeared once in
+   *     the body); the `[N,m]` form stays since the multiplier is server-set.
+   *   - `[{N}]` literal placeholder that resolves to nothing; removed.
+   *   - Trailing `[{}]` / leading `[]` left over from funcquestText slots —
+   *     removed.
+   *   - `<N times ... >` redaction of conditional multipliers is left intact
+   *     (Skill Reload uses it).
    */
   renderSkillDetail(skill: Skill, level: number): string {
     let template = skill.unmodifiedDetail || skill.detail || '';
-    if (!template.includes('{')) {
+    if (!template.includes('{') && !template.includes('[')) {
       return template;
     }
-    // Atlas Academy append/passive skills use `{{N:Value:flag}}` placeholders
-    // (with a `:m`/`:y` suffix). They resolve to the value of
-    // `functions[N].svals[level].Value` formatted using `funcType`. We normalise
-    // them to plain `{N}` so the regex below can substitute them in the same
-    // pass.
+    // Normalise `{{N:Value:flag}}` -> `{N}` so the substitution regex handles it.
     template = template.replace(/\{\{(\d+):[^}]+\}\}/g, '{$1}');
-    // Strip trailing/leading `[{}]` brackets left over from funcquestText slots.
-    template = template.replace(/\[\{\}\]/g, '');
+    // Drop empty `[{N}]` / `[]` brackets that resolve to nothing.
+    template = template.replace(/\[\{\d*\}\]/g, '');
+    template = template.replace(/\[\s*\]/g, '');
+    // Drop a plain `[N]` suffix that the server adds as a duplicate copy of
+    // the same value. We don't touch `[N,m]` because the multiplier matters.
+    template = template.replace(/\s*\[\d+\](?!\s*[,.])/g, '');
 
     const functions = skill.functions ?? [];
-    // First pass: substitute `{N}` placeholders and, when the resolved value
-    // already ends with `%`, drop the matching literal `%` that some
-    // templates (Atlas Academy append skills) tack on immediately after the
-    // placeholder. This avoids the doubled-up `30%%` output we used to see.
     return template.replace(/\{(\d+)\}(%)?/g, (_match, indexStr, trailingPct) => {
       const funcIndex = parseInt(indexStr, 10);
       const fn = functions[funcIndex];
@@ -98,18 +102,15 @@ export class UtilsService {
           formatted = this.fallbackSiblingValue(functions, level);
         }
       } else {
-        // functions[N] missing — search siblings.
         formatted = this.fallbackSiblingValue(functions, level);
       }
-      // If the formatted value already carries a `%` and the template had a
-      // literal `%` next to the placeholder, drop the literal one to avoid
-      // `30%%`. Keep the template's `%` for raw values that don't already
-      // include one.
+      // Drop a literal `%` next to the placeholder when the resolved value
+      // already ends with one — prevents the doubled-up `30%%` output.
       if (trailingPct && formatted.endsWith('%')) {
         return formatted;
       }
       return trailingPct ? `${formatted}${trailingPct}` : formatted;
-    });
+    }).replace(/\s{2,}/g, ' ').trim();
   }
 
   /**
@@ -177,5 +178,34 @@ export class UtilsService {
     }
 
     return baseActives.sort((a, b) => a.num - b.num);
+  }
+
+  /**
+   * Atlas Academy exposes skill strengthenings as additional entries that
+   * share the same `num` as the base version. The order is given by `priority`
+   * (1 = base, 2 = first strengthening, 3 = second, ...). This helper groups
+   * every active skill by `num` and returns each group's versions sorted by
+   * priority, so the UI can offer a version selector (e.g. Yin-Yang A / A+).
+   */
+  getServantActiveSkillGroups(
+    detailedServant: DetailedServant,
+    detailedServantEnglish: DetailedServant
+  ): Array<{ num: number; versions: Skill[] }> {
+    const source = detailedServantEnglish?.skills?.length
+      ? detailedServantEnglish
+      : detailedServant;
+
+    const groups = new Map<number, Skill[]>();
+    for (const skill of source.skills ?? []) {
+      if (skill.type !== 'active') continue;
+      if (!groups.has(skill.num)) groups.set(skill.num, []);
+      groups.get(skill.num)!.push(skill);
+    }
+    return Array.from(groups.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([num, versions]) => ({
+        num,
+        versions: versions.sort((a, b) => a.priority - b.priority),
+      }));
   }
 }
