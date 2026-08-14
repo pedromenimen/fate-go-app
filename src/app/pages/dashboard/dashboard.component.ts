@@ -105,6 +105,17 @@ export class DashboardComponent implements OnInit {
     this.updatePage();
   }
 
+  clearSearch(): void {
+    if (!this.searchValue.value) return;
+    this.searchValue.setValue('');
+    // valueChanges handles persist + filter; reset to page 1 explicitly
+    // because the silent setValue bypasses userInitiatedSearch.
+    this.userInitiatedSearch = true;
+    this.applyFilter('');
+    this.userInitiatedSearch = false;
+    this.persistCurrentPage();
+  }
+
   onPageSizeChange(event: Event): void {
     const value = Number((event.target as HTMLSelectElement).value);
     if (!Number.isNaN(value) && this.pageSizeOptions.includes(value)) {

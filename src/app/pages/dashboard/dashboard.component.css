@@ -96,6 +96,24 @@
   color: #ffd700 !important;
 }
 
+/* Clear search button */
+::ng-deep .search-clear-btn {
+  color: rgba(255, 255, 255, 0.55) !important;
+  transition: color 0.2s ease, background-color 0.2s ease !important;
+}
+
+::ng-deep .search-clear-btn:hover {
+  color: #ffd700 !important;
+  background-color: rgba(255, 215, 0, 0.12) !important;
+}
+
+::ng-deep .search-clear-btn .mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+
 /* Autocomplete option styling */
 ::ng-deep .option-content {
   display: flex;

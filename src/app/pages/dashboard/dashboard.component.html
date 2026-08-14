@@ -6,6 +6,11 @@
       <mat-label>Search servant...</mat-label>
       <input type="text" matInput [formControl]="searchValue"
         placeholder="Type a servant name...">
+      @if (searchValue.value) {
+        <button matSuffix mat-icon-button aria-label="Clear search" type="button" (click)="clearSearch()" class="search-clear-btn">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
     </mat-form-field>
   </div>
 
