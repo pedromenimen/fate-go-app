@@ -31,7 +31,7 @@
             <div class="detail">
               <h3 class="skill-name">{{skill.name}}</h3>
               <p class="skill-detail">{{getAppendSkillDetail(skill, i)}}</p>
-              @if (getAppendSkillEffects(skill, i).length > 0) {
+              @if (shouldShowAppendSkillEffects(skill) && getAppendSkillEffects(skill, i).length > 0) {
                 <ul class="skill-effects">
                   @for (effect of getAppendSkillEffects(skill, i); track effect.name) {
                     <li>

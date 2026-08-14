@@ -96,6 +96,41 @@ export class UtilsService {
   }
 
   /**
+   * Atlas Academy resolves `{N}` placeholders in `skill.detail` for most
+   * active skills, so the numeric values already appear inline (e.g.
+   * "Increase Extra Attack Card's effectiveness by 50% for yourself").
+   * For those skills the per-function effect chips would be redundant.
+   *
+   * Append/passive skills also inline numbers once `renderSkillDetail`
+   * resolves them, so showing "Extra Attack Up: 50%" next to "by 50%" is
+   * pure repetition.
+   *
+   * The remaining case — *active* skills where the description stays
+   * qualitative ("Apply Ignore Invincible (1 turn) & increase Arts card
+   * effectiveness (1 turn)") — is the one where the per-level chip list
+   * adds real information ("Arts Up: 25%"). We detect it by stripping the
+   * cosmetic `[...]` and `[{N}]` noise and checking whether either field
+   * still contains a real `{N}` placeholder. If neither does, Atlas was
+   * happy with the qualitative text and the chips add value.
+   */
+  shouldShowSkillEffects(skill: Skill): boolean {
+    const preRendered = (skill.detail || '').trim();
+    const raw = skill.unmodifiedDetail || '';
+    return !this.hasRealPlaceholder(preRendered) && !this.hasRealPlaceholder(raw);
+  }
+
+  /**
+   * Returns true when `text` contains a placeholder that needs resolving
+   * (e.g. `{N}` or `{{N:Value:flag}}`). Cosmetic brackets like `[{N}]` or
+   * `[Demerit]` are stripped first since they don't carry a value to show.
+   */
+  private hasRealPlaceholder(text: string): boolean {
+    if (!text) return false;
+    const noBrackets = text.replace(/\[[^\]]*\]/g, '');
+    return /\{\{|\{[A-Za-z0-9]+\}/.test(noBrackets);
+  }
+
+  /**
    * Strips Atlas Academy's cosmetic noise (BBCode upgrade markers, empty
    * funcquest brackets, duplicate `[N]` suffixes, colour-only labels and the
    * `▲` strengthening glyph) and collapses stray whitespace/punctuation.
