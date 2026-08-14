@@ -79,11 +79,19 @@ export class UtilsService {
    */
   renderSkillDetail(skill: Skill, level: number): string {
     const preRendered = (skill.detail || '').trim();
-    if (preRendered) {
+    // Prefer `detail` when Atlas already resolved it (active skill class
+    // skills, NPs, etc.). Append/passive skills ship a `detail` that *still*
+    // contains `{{N:Value:flag}}` placeholders; for those we fall through
+    // to the `unmodifiedDetail` resolver. We detect the unresolved case by
+    // looking for any `{` in the candidate text.
+    const hasUnresolvedPlaceholders = /\{[^}]{1,30}\}/.test(preRendered);
+    if (preRendered && !hasUnresolvedPlaceholders) {
       return this.cleanSkillText(preRendered);
     }
     const raw = skill.unmodifiedDetail || '';
-    if (!raw) return '';
+    if (!raw) {
+      return preRendered ? this.cleanSkillText(preRendered) : '';
+    }
     return this.cleanSkillText(this.resolveSkillPlaceholders(raw, skill, level));
   }
 
@@ -91,29 +99,64 @@ export class UtilsService {
    * Strips Atlas Academy's cosmetic noise (BBCode upgrade markers, empty
    * funcquest brackets, duplicate `[N]` suffixes, colour-only labels and the
    * `▲` strengthening glyph) and collapses stray whitespace/punctuation.
+   *
+   * We keep a small allow-list of bracketed labels that carry real meaning
+   * (the seven main class names plus a few quality/trait tags Atlas uses),
+   * so e.g. `[Foreigner] class` survives intact while `[Demerit]` is removed.
    */
   private cleanSkillText(text: string): string {
-    return text
+    let out = text
       .replace(/\s*▲\s*/g, ' ')
       .replace(/\[g\]\[o\][^[]*\[\/o\]\[\/g\]/g, '')
       .replace(/\[\{\d*\}\]/g, '')
       .replace(/\[\s*\]/g, '')
       .replace(/\s*\[\d+\](?!\s*[,.])/g, '')
-      .replace(/\[[A-Za-z][A-Za-z\s]*\]/g, '')
-      .replace(/\s{2,}/g, ' ')
+      .replace(/\s{2,}/g, ' ');
+    // Drop bracketed labels that aren't in the preserve list.
+    out = out.replace(/\[([A-Za-z][A-Za-z\s]*)\]/g, (_match, inner: string) => {
+      const trimmed = inner.trim();
+      if (UtilsService.PRESERVED_BRACKETED.has(trimmed)) {
+        return trimmed;
+      }
+      return '';
+    });
+    return out
       .replace(/\s+([,.;:])/g, '$1')
+      .replace(/\(\s+/g, '(')
+      .replace(/\s+\)/g, ')')
       .trim();
   }
+
+  /**
+   * Bracketed labels Atlas uses that we keep as plain text. Everything else
+   * inside `[...]` is stripped as cosmetic noise (e.g. `[Demerit]`,
+   * `[Advantage]`, colour markers).
+   */
+  private static readonly PRESERVED_BRACKETED = new Set<string>([
+    'Foreigner',
+    'Saber', 'Archer', 'Lancer', 'Rider', 'Caster', 'Assassin', 'Berserker',
+    'Ruler', 'Avenger', 'Moon Cancer', 'Alter Ego', 'Pretender', 'Beast',
+    'Human', 'Divine', 'Demonic', 'Good', 'Evil', 'Neutral',
+    'Chaotic', 'Lawful', 'Summer', 'Christmas',
+  ]);
 
   /**
    * Resolves every `{N}` placeholder in `unmodifiedDetail` against the skill's
    * `functions[N].svals[level].Value`. Functions without a numeric `Value`
    * fall back to the next sibling that has one, matching Atlas Academy's
    * own fallback behaviour.
+   *
+   * Note: we strip `[{N}]` *before* substituting `{N}` because the bracketed
+   * form is Atlas's way of marking "this placeholder should resolve to empty
+   * here". If we let it survive into substitution, the inner `{N}` would
+   * also get filled in (e.g. `[{0}]` would become `[30%]` instead of `""`).
    */
   private resolveSkillPlaceholders(raw: string, skill: Skill, level: number): string {
     const functions = skill.functions ?? [];
-    return raw
+    // Drop bracketed placeholders first so they don't get their inner {N}
+    // resolved to a leftover value next to the description.
+    const stripped = raw.replace(/\[\{\d+\}\]/g, '');
+    return stripped
       .replace(/\{\{(\d+):[^}]+\}\}/g, '{$1}')
       .replace(/\{(\d+)\}(%)?/g, (_match, indexStr, trailingPct) => {
         const fn = functions[parseInt(indexStr, 10)];
