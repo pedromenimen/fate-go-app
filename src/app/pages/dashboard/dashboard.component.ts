@@ -22,6 +22,8 @@ export class DashboardComponent implements OnInit {
   pageSizeOptions = [10, 20, 50, 100];
   totalPages = 1;
   pagedServants: SimpleServant[] = [];
+  private initialFilterApplied = false;
+  private userInitiatedSearch = false;
 
   private static readonly PAGE_STORAGE_KEY = 'dashboard.pageSize';
   private static readonly CURRENT_PAGE_STORAGE_KEY = 'dashboard.currentPage';
@@ -53,7 +55,9 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.searchValue.valueChanges.subscribe((name: string) => {
+      this.userInitiatedSearch = true;
       this.applyFilter(name || '');
+      this.userInitiatedSearch = false;
     });
   }
 
@@ -62,8 +66,17 @@ export class DashboardComponent implements OnInit {
     this.filteredServants = this.options.filter((option) =>
       option.name.toLowerCase().includes(filterValue)
     );
-    this.currentPage = 1;
+    // First filter (right after data load) should respect restored currentPage;
+    // subsequent manual searches reset to page 1.
+    if (!this.initialFilterApplied) {
+      this.initialFilterApplied = true;
+    } else {
+      this.currentPage = 1;
+    }
     this.updatePage();
+    if (!this.userInitiatedSearch) {
+      this.persistCurrentPage();
+    }
   }
 
   updatePage(): void {

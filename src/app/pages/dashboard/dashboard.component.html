@@ -34,9 +34,9 @@
       </button>
       <label class="page-size-inline">
         <span class="page-size-label">Per page:</span>
-        <select class="page-size-select" [value]="pageSize" (change)="onPageSizeChange($event)" aria-label="Items per page">
+        <select class="page-size-select" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)" aria-label="Items per page">
           @for (size of pageSizeOptions; track size) {
-            <option [value]="size">{{size}}</option>
+            <option [ngValue]="size">{{size}}</option>
           }
         </select>
       </label>
@@ -78,9 +78,9 @@
       </button>
       <label class="page-size-inline">
         <span class="page-size-label">Per page:</span>
-        <select class="page-size-select" [value]="pageSize" (change)="onPageSizeChange($event)" aria-label="Items per page">
+        <select class="page-size-select" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)" aria-label="Items per page">
           @for (size of pageSizeOptions; track size) {
-            <option [value]="size">{{size}}</option>
+            <option [ngValue]="size">{{size}}</option>
           }
         </select>
       </label>
