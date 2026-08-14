@@ -62,43 +62,101 @@ export class UtilsService {
    *   - `unmodifiedDetail` — the raw template containing `{N}` placeholders,
    *                          BBCode upgrade markers and funcquest brackets.
    *
-   * `detail` is almost always what we want; it doesn't depend on the chosen
-   * skill level and doesn't carry `{N}` leftovers. We only fall back to
-   * `unmodifiedDetail` for the few append/passive entries where `detail` is
-   * empty.
+   * Most skills ship with a usable `detail`; we use it when present and fall
+   * back to parsing `unmodifiedDetail` only when `detail` is empty. The
+   * parsing path resolves `{N}` placeholders against `functions[N].svals
+   * [level].Value` so append skills still get numeric values inlined.
    *
-   * The `detail` text still ships with cosmetic noise we strip here:
-   *   - `▲` — Unicode "strengthened-from-previous-level" marker Atlas renders
-   *     around values that grew between upgrades. No numeric meaning for us.
+   * Both paths strip Atlas' cosmetic noise:
+   *   - `▲` — Unicode "strengthened-from-previous-level" marker.
    *   - `[Demerit]`, `[Advantage]` — colour-only labels with no value.
    *   - `[N]` numeric brackets that sit after a value as a duplicate copy.
    *   - Empty `[]` / `[{N}]` brackets left from funcquest slots.
+   *   - `[g][o]...[/o][/g]` BBCode upgrade wrappers.
    *
    * `<N times ... >` conditional multipliers (Skill Reload) are kept intact
    * since they describe real per-level behaviour.
    */
-  renderSkillDetail(skill: Skill, _level: number): string {
-    // Prefer the pre-rendered `detail` field; only fall back to the raw
-    // template when the API hasn't populated it.
-    let template = skill.detail || skill.unmodifiedDetail || '';
-    if (!template) return '';
+  renderSkillDetail(skill: Skill, level: number): string {
+    const preRendered = (skill.detail || '').trim();
+    if (preRendered) {
+      return this.cleanSkillText(preRendered);
+    }
+    const raw = skill.unmodifiedDetail || '';
+    if (!raw) return '';
+    return this.cleanSkillText(this.resolveSkillPlaceholders(raw, skill, level));
+  }
 
-    // Drop the `▲` strengthening marker and its surrounding whitespace runs.
-    template = template.replace(/\s*▲\s*/g, ' ');
-    // Drop empty `[]` / `[{N}]` brackets that resolve to nothing.
-    template = template.replace(/\[\{\d*\}\]/g, '');
-    template = template.replace(/\[\s*\]/g, '');
-    // Drop a plain `[N]` suffix that duplicates a value already shown.
-    // Keep `[N,m]` since the multiplier is real.
-    template = template.replace(/\s*\[\d+\](?!\s*[,.])/g, '');
-    // Drop bracketed colour-only labels like `[Demerit]` / `[Advantage]`.
-    // We restrict to letter-only contents so we never eat numeric brackets.
-    template = template.replace(/\[[A-Za-z][A-Za-z\s]*\]/g, '');
-
-    return template
+  /**
+   * Strips Atlas Academy's cosmetic noise (BBCode upgrade markers, empty
+   * funcquest brackets, duplicate `[N]` suffixes, colour-only labels and the
+   * `▲` strengthening glyph) and collapses stray whitespace/punctuation.
+   */
+  private cleanSkillText(text: string): string {
+    return text
+      .replace(/\s*▲\s*/g, ' ')
+      .replace(/\[g\]\[o\][^[]*\[\/o\]\[\/g\]/g, '')
+      .replace(/\[\{\d*\}\]/g, '')
+      .replace(/\[\s*\]/g, '')
+      .replace(/\s*\[\d+\](?!\s*[,.])/g, '')
+      .replace(/\[[A-Za-z][A-Za-z\s]*\]/g, '')
       .replace(/\s{2,}/g, ' ')
       .replace(/\s+([,.;:])/g, '$1')
       .trim();
+  }
+
+  /**
+   * Resolves every `{N}` placeholder in `unmodifiedDetail` against the skill's
+   * `functions[N].svals[level].Value`. Functions without a numeric `Value`
+   * fall back to the next sibling that has one, matching Atlas Academy's
+   * own fallback behaviour.
+   */
+  private resolveSkillPlaceholders(raw: string, skill: Skill, level: number): string {
+    const functions = skill.functions ?? [];
+    return raw
+      .replace(/\{\{(\d+):[^}]+\}\}/g, '{$1}')
+      .replace(/\{(\d+)\}(%)?/g, (_match, indexStr, trailingPct) => {
+        const fn = functions[parseInt(indexStr, 10)];
+        let resolved = '';
+        if (fn) {
+          const sv: Sval | undefined = fn.svals?.[level];
+          if (sv && sv.Value !== undefined) {
+            resolved = this.formatSkillSvalValue(sv.Value, fn.funcType);
+          }
+        }
+        if (!resolved) {
+          resolved = this.fallbackSiblingValue(functions, level);
+        }
+        if (trailingPct && !resolved.endsWith('%')) {
+          resolved += trailingPct;
+        }
+        return resolved;
+      });
+  }
+
+  /**
+   * Returns one entry per function of the skill that has a numeric `Value`
+   * at the requested level. Each entry carries the function's popup label
+   * (e.g. "Arts Up"), the formatted per-level value, and the duration in
+   * turns when the function carries a `Turn` field. The UI renders this as a
+   * compact "effects" list under the description so users can see *what each
+   * level actually does* — information Atlas's `detail` text often omits.
+   */
+  renderSkillEffects(
+    skill: Skill,
+    level: number
+  ): Array<{ name: string; value: string; turn?: number }> {
+    const effects: Array<{ name: string; value: string; turn?: number }> = [];
+    for (const fn of skill.functions ?? []) {
+      const sv: Sval | undefined = fn.svals?.[level];
+      if (!sv || sv.Value === undefined || sv.Value === null) continue;
+      const name = (fn.funcPopupText || '').replace(/\s+/g, ' ').trim();
+      if (!name) continue;
+      const value = this.formatSkillSvalValue(sv.Value, fn.funcType);
+      const turn = sv.Turn && sv.Turn > 0 ? sv.Turn : undefined;
+      effects.push({ name, value, turn });
+    }
+    return effects;
   }
 
   /**

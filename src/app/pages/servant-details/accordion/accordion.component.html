@@ -31,6 +31,19 @@
             <div class="detail">
               <h3 class="skill-name">{{skill.name}}</h3>
               <p class="skill-detail">{{getAppendSkillDetail(skill, i)}}</p>
+              @if (getAppendSkillEffects(skill, i).length > 0) {
+                <ul class="skill-effects">
+                  @for (effect of getAppendSkillEffects(skill, i); track effect.name) {
+                    <li>
+                      <span class="effect-name">{{effect.name}}:</span>
+                      <span class="effect-value">{{effect.value}}</span>
+                      @if (effect.turn) {
+                        <span class="effect-turn">({{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}})</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
             </div>
             <div class="skill-level">
               <p>Skill level</p>
@@ -77,6 +90,19 @@
                 <h3 class="skill-name">{{getActiveSkill(gi).name}}</h3>
               }
               <p class="skill-detail">{{getActiveSkillDetail(gi)}}</p>
+              @if (getActiveSkillEffects(gi).length > 0) {
+                <ul class="skill-effects">
+                  @for (effect of getActiveSkillEffects(gi); track effect.name) {
+                    <li>
+                      <span class="effect-name">{{effect.name}}:</span>
+                      <span class="effect-value">{{effect.value}}</span>
+                      @if (effect.turn) {
+                        <span class="effect-turn">({{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}})</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
               <p class="skill-cooldown">Cooldown: {{getActiveSkillCooldown(gi)}} turns</p>
             </div>
             <div class="skill-level">

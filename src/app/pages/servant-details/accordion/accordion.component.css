@@ -104,6 +104,41 @@
   line-height: 1.4;
 }
 
+.skill-effects {
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+}
+
+.skill-effects li {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.78);
+  background: rgba(255, 215, 0, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.18);
+  border-radius: 6px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.skill-effects .effect-name {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.skill-effects .effect-value {
+  color: #ffd700;
+  font-weight: 600;
+}
+
+.skill-effects .effect-turn {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+}
+
 .skill-level {
   display: flex;
   flex-direction: column;

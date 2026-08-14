@@ -85,6 +85,13 @@ export class AccordionComponent implements OnInit {
     );
   }
 
+  getActiveSkillEffects(groupIndex: number) {
+    return this.utilsService.renderSkillEffects(
+      this.getActiveSkill(groupIndex),
+      this.getActiveSkillLevel(groupIndex)
+    );
+  }
+
   getActiveSkillCooldown(groupIndex: number): number {
     return this.utilsService.getSkillCooldown(
       this.getActiveSkill(groupIndex),
@@ -99,6 +106,13 @@ export class AccordionComponent implements OnInit {
 
   getAppendSkillDetail(skill: Skill, index: number): string {
     return this.utilsService.renderSkillDetail(
+      skill,
+      this.getAppendSkillLevel(index)
+    );
+  }
+
+  getAppendSkillEffects(skill: Skill, index: number) {
+    return this.utilsService.renderSkillEffects(
       skill,
       this.getAppendSkillLevel(index)
     );
