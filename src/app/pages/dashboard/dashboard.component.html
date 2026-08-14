@@ -32,6 +32,14 @@
       <button class="glass-btn" [class.disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
         Next ›
       </button>
+      <label class="page-size-inline">
+        <span class="page-size-label">Per page:</span>
+        <select class="page-size-select" [value]="pageSize" (change)="onPageSizeChange($event)" aria-label="Items per page">
+          @for (size of pageSizeOptions; track size) {
+            <option [value]="size">{{size}}</option>
+          }
+        </select>
+      </label>
     </div>
   }
 
@@ -56,17 +64,6 @@
       <div class="skeleton-btn shimmer"></div>
     </div>
   } @else {
-    <div class="controls-panel bottom-controls">
-      <div class="page-size-selector">
-        <span class="page-size-label">Per page:</span>
-        @for (size of pageSizeOptions; track size) {
-          <button class="glass-btn glass-btn-sm" [class.active]="pageSize === size" (click)="setPageSize(size)">
-            {{size}}
-          </button>
-        }
-      </div>
-    </div>
-
     <div class="pagination bottom-pagination">
       <button class="glass-btn" [class.disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
         ‹ Prev
@@ -79,6 +76,14 @@
       <button class="glass-btn" [class.disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
         Next ›
       </button>
+      <label class="page-size-inline">
+        <span class="page-size-label">Per page:</span>
+        <select class="page-size-select" [value]="pageSize" (change)="onPageSizeChange($event)" aria-label="Items per page">
+          @for (size of pageSizeOptions; track size) {
+            <option [value]="size">{{size}}</option>
+          }
+        </select>
+      </label>
     </div>
   }
 </div>

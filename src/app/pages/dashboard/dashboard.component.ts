@@ -23,7 +23,18 @@ export class DashboardComponent implements OnInit {
   totalPages = 1;
   pagedServants: SimpleServant[] = [];
 
+  private static readonly PAGE_STORAGE_KEY = 'dashboard.pageSize';
+  private static readonly CURRENT_PAGE_STORAGE_KEY = 'dashboard.currentPage';
+
   constructor(private servantService: ServantService) {
+    const savedPageSize = this.readPageSizeFromStorage();
+    if (savedPageSize !== null) {
+      this.pageSize = savedPageSize;
+    }
+    const savedCurrentPage = this.readCurrentPageFromStorage();
+    if (savedCurrentPage !== null) {
+      this.currentPage = savedCurrentPage;
+    }
     this.servantService.getServantList().subscribe({
       next: (servantList) => {
         this.options = servantList.filter(
@@ -67,12 +78,59 @@ export class DashboardComponent implements OnInit {
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
+    this.persistCurrentPage();
     this.updatePage();
   }
 
   setPageSize(size: number): void {
     this.pageSize = size;
+    this.persistPageSize();
     this.updatePage();
+  }
+
+  onPageSizeChange(event: Event): void {
+    const value = Number((event.target as HTMLSelectElement).value);
+    if (!Number.isNaN(value) && this.pageSizeOptions.includes(value)) {
+      this.setPageSize(value);
+    }
+  }
+
+  private readPageSizeFromStorage(): number | null {
+    try {
+      const raw = localStorage.getItem(DashboardComponent.PAGE_STORAGE_KEY);
+      if (raw === null) return null;
+      const parsed = Number(raw);
+      return this.pageSizeOptions.includes(parsed) ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private readCurrentPageFromStorage(): number | null {
+    try {
+      const raw = localStorage.getItem(DashboardComponent.CURRENT_PAGE_STORAGE_KEY);
+      if (raw === null) return null;
+      const parsed = Number(raw);
+      return Number.isInteger(parsed) && parsed >= 1 ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private persistPageSize(): void {
+    try {
+      localStorage.setItem(DashboardComponent.PAGE_STORAGE_KEY, String(this.pageSize));
+    } catch {
+      /* ignore quota / privacy errors */
+    }
+  }
+
+  private persistCurrentPage(): void {
+    try {
+      localStorage.setItem(DashboardComponent.CURRENT_PAGE_STORAGE_KEY, String(this.currentPage));
+    } catch {
+      /* ignore quota / privacy errors */
+    }
   }
 
   displayFn(user: SimpleServant): string {

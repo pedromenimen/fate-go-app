@@ -136,16 +136,56 @@
   font-size: 13px;
 }
 
-.page-size-selector {
-  display: flex;
+.page-size-inline {
+  display: inline-flex;
   align-items: center;
   gap: 6px;
+  margin-left: 10px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 215, 0, 0.25);
 }
 
 .page-size-label {
   color: rgba(255, 255, 255, 0.4);
   font-size: 12px;
   margin-right: 4px;
+}
+
+.page-size-select {
+  background: rgba(30, 30, 35, 0.9);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #ffd700 50%),
+                    linear-gradient(135deg, #ffd700 50%, transparent 50%);
+  background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 26px;
+}
+
+.page-size-select:hover {
+  border-color: rgba(255, 215, 0, 0.55);
+  background-color: rgba(40, 40, 48, 0.95);
+}
+
+.page-size-select:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.25);
+}
+
+.page-size-select option {
+  background: #1a1a20;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Dark opaque buttons */
