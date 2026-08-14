@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
 
   private static readonly PAGE_STORAGE_KEY = 'dashboard.pageSize';
   private static readonly CURRENT_PAGE_STORAGE_KEY = 'dashboard.currentPage';
+  private static readonly SEARCH_STORAGE_KEY = 'dashboard.searchValue';
 
   constructor(private servantService: ServantService) {
     const savedPageSize = this.readPageSizeFromStorage();
@@ -37,13 +38,15 @@ export class DashboardComponent implements OnInit {
     if (savedCurrentPage !== null) {
       this.currentPage = savedCurrentPage;
     }
+    const savedSearch = this.readSearchFromStorage();
+    this.searchValue = new UntypedFormControl(savedSearch);
     this.servantService.getServantList().subscribe({
       next: (servantList) => {
         this.options = servantList.filter(
           (servant) => servant.type.toLowerCase() !== 'enemycollectiondetail'
         );
         this.filteredServants = [...this.options];
-        this.applyFilter('');
+        this.applyFilter(savedSearch);
         this.loading = false;
       },
       error: (err: Error) => {
@@ -55,6 +58,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.searchValue.valueChanges.subscribe((name: string) => {
+      this.persistSearch(name || '');
       this.userInitiatedSearch = true;
       this.applyFilter(name || '');
       this.userInitiatedSearch = false;
@@ -130,6 +134,14 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  private readSearchFromStorage(): string {
+    try {
+      return localStorage.getItem(DashboardComponent.SEARCH_STORAGE_KEY) ?? '';
+    } catch {
+      return '';
+    }
+  }
+
   private persistPageSize(): void {
     try {
       localStorage.setItem(DashboardComponent.PAGE_STORAGE_KEY, String(this.pageSize));
@@ -141,6 +153,14 @@ export class DashboardComponent implements OnInit {
   private persistCurrentPage(): void {
     try {
       localStorage.setItem(DashboardComponent.CURRENT_PAGE_STORAGE_KEY, String(this.currentPage));
+    } catch {
+      /* ignore quota / privacy errors */
+    }
+  }
+
+  private persistSearch(value: string): void {
+    try {
+      localStorage.setItem(DashboardComponent.SEARCH_STORAGE_KEY, value);
     } catch {
       /* ignore quota / privacy errors */
     }
