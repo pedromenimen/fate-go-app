@@ -52,65 +52,53 @@ export class UtilsService {
   }
 
   /**
-   * Replaces every `{N}` placeholder in a skill's `unmodifiedDetail` with the
-   * formatted value pulled from the matching `functions[N].svals[level].Value`.
+   * Renders the human-readable description of a skill or append skill.
    *
-   * Atlas Academy skills may have multiple functions (e.g. Obscurant Wall of
-   * Chalk has addState + gainNp + hastenNpturn). The placeholder `{0}` refers
-   * to `functions[0].svals[level]`, `{1}` to `functions[1]`, etc. Not every
-   * function has a `Value` field, so we look up the next available numeric
-   * value when the requested function doesn't have one.
+   * Atlas Academy exposes two fields per skill:
+   *   - `detail`          — already-substituted text the API ships ready for
+   *                         display (e.g. `Apply Ignore Invincible (1 turn) &
+   *                         increase Arts card effectiveness (1 turn) for
+   *                         yourself`).
+   *   - `unmodifiedDetail` — the raw template containing `{N}` placeholders,
+   *                          BBCode upgrade markers and funcquest brackets.
    *
-   * Atlas Academy templates include several conditional shapes that don't add
-   * meaning once the value is substituted:
-   *   - `{{N:Value:flag}}` (e.g. `{{1:Value:m}}`) — the `:flag` is a server-side
-   *     rendering hint. We collapse these to plain `{N}` before substitution.
-   *   - `[N]` / `[N,m]` bracketed suffixes tied to a function index; the
-   *     brackets wrap a copy of the value with a conditional multiplier flag.
-   *     The simple `[N]` form is removed (the value already appeared once in
-   *     the body); the `[N,m]` form stays since the multiplier is server-set.
-   *   - `[{N}]` literal placeholder that resolves to nothing; removed.
-   *   - Trailing `[{}]` / leading `[]` left over from funcquestText slots —
-   *     removed.
-   *   - `<N times ... >` redaction of conditional multipliers is left intact
-   *     (Skill Reload uses it).
+   * `detail` is almost always what we want; it doesn't depend on the chosen
+   * skill level and doesn't carry `{N}` leftovers. We only fall back to
+   * `unmodifiedDetail` for the few append/passive entries where `detail` is
+   * empty.
+   *
+   * The `detail` text still ships with cosmetic noise we strip here:
+   *   - `▲` — Unicode "strengthened-from-previous-level" marker Atlas renders
+   *     around values that grew between upgrades. No numeric meaning for us.
+   *   - `[Demerit]`, `[Advantage]` — colour-only labels with no value.
+   *   - `[N]` numeric brackets that sit after a value as a duplicate copy.
+   *   - Empty `[]` / `[{N}]` brackets left from funcquest slots.
+   *
+   * `<N times ... >` conditional multipliers (Skill Reload) are kept intact
+   * since they describe real per-level behaviour.
    */
-  renderSkillDetail(skill: Skill, level: number): string {
-    let template = skill.unmodifiedDetail || skill.detail || '';
-    if (!template.includes('{') && !template.includes('[')) {
-      return template;
-    }
-    // Normalise `{{N:Value:flag}}` -> `{N}` so the substitution regex handles it.
-    template = template.replace(/\{\{(\d+):[^}]+\}\}/g, '{$1}');
-    // Drop empty `[{N}]` / `[]` brackets that resolve to nothing.
+  renderSkillDetail(skill: Skill, _level: number): string {
+    // Prefer the pre-rendered `detail` field; only fall back to the raw
+    // template when the API hasn't populated it.
+    let template = skill.detail || skill.unmodifiedDetail || '';
+    if (!template) return '';
+
+    // Drop the `▲` strengthening marker and its surrounding whitespace runs.
+    template = template.replace(/\s*▲\s*/g, ' ');
+    // Drop empty `[]` / `[{N}]` brackets that resolve to nothing.
     template = template.replace(/\[\{\d*\}\]/g, '');
     template = template.replace(/\[\s*\]/g, '');
-    // Drop a plain `[N]` suffix that the server adds as a duplicate copy of
-    // the same value. We don't touch `[N,m]` because the multiplier matters.
+    // Drop a plain `[N]` suffix that duplicates a value already shown.
+    // Keep `[N,m]` since the multiplier is real.
     template = template.replace(/\s*\[\d+\](?!\s*[,.])/g, '');
+    // Drop bracketed colour-only labels like `[Demerit]` / `[Advantage]`.
+    // We restrict to letter-only contents so we never eat numeric brackets.
+    template = template.replace(/\[[A-Za-z][A-Za-z\s]*\]/g, '');
 
-    const functions = skill.functions ?? [];
-    return template.replace(/\{(\d+)\}(%)?/g, (_match, indexStr, trailingPct) => {
-      const funcIndex = parseInt(indexStr, 10);
-      const fn = functions[funcIndex];
-      let formatted: string;
-      if (fn) {
-        const sval: Sval | undefined = fn.svals?.[level];
-        if (sval && sval.Value !== undefined) {
-          formatted = this.formatSkillSvalValue(sval.Value, fn.funcType);
-        } else {
-          formatted = this.fallbackSiblingValue(functions, level);
-        }
-      } else {
-        formatted = this.fallbackSiblingValue(functions, level);
-      }
-      // Drop a literal `%` next to the placeholder when the resolved value
-      // already ends with one — prevents the doubled-up `30%%` output.
-      if (trailingPct && formatted.endsWith('%')) {
-        return formatted;
-      }
-      return trailingPct ? `${formatted}${trailingPct}` : formatted;
-    }).replace(/\s{2,}/g, ' ').trim();
+    return template
+      .replace(/\s{2,}/g, ' ')
+      .replace(/\s+([,.;:])/g, '$1')
+      .trim();
   }
 
   /**
