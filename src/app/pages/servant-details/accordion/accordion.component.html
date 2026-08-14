@@ -33,16 +33,34 @@
               <p class="skill-detail">{{getAppendSkillDetail(skill, i)}}</p>
               @if (shouldShowAppendSkillEffects(skill) && getAppendSkillEffects(skill, i).length > 0) {
                 <ul class="skill-effects">
-                  @for (effect of getAppendSkillEffects(skill, i); track effect.name) {
+                  @for (effect of getAppendSkillEffects(skill, i); track $index) {
                     <li>
+                      @if (effect.icon) {
+                        <img class="effect-icon" [src]="effect.icon" alt="" />
+                      }
                       <span class="effect-name">{{effect.name}}:</span>
                       <span class="effect-value">{{effect.value}}</span>
+                      @if (effect.value2) {
+                        <span class="effect-value2">({{effect.value2}})</span>
+                      }
                       @if (effect.turn) {
-                        <span class="effect-turn">({{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}})</span>
+                        <span class="effect-turn">{{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}}</span>
+                      }
+                      @if (effect.count) {
+                        <span class="effect-count">x{{effect.count}}</span>
                       }
                     </li>
                   }
                 </ul>
+              }
+              @if (getAppendSkillActivationTraits(skill).length > 0) {
+                <p class="skill-traits">
+                  <strong>Requer:</strong>
+                  <span class="trait-pill">{{getAppendSkillActivationTraits(skill).join(', ')}}</span>
+                </p>
+              }
+              @if (getAppendSkillCondition(skill); as cond) {
+                <p class="skill-condition">{{cond}}</p>
               }
             </div>
             <div class="skill-level">
@@ -54,6 +72,9 @@
                   <option [value]="option">{{option+1}}</option>
                 }
               </select>
+              <p class="skill-cooldown">
+                Cooldown: {{getSkillCooldownAt(skill, getAppendSkillLevel(i))}} turns
+              </p>
             </div>
           </div>
         </div>
@@ -92,16 +113,34 @@
               <p class="skill-detail">{{getActiveSkillDetail(gi)}}</p>
               @if (getActiveSkillEffects(gi).length > 0) {
                 <ul class="skill-effects">
-                  @for (effect of getActiveSkillEffects(gi); track effect.name) {
+                  @for (effect of getActiveSkillEffects(gi); track $index) {
                     <li>
+                      @if (effect.icon) {
+                        <img class="effect-icon" [src]="effect.icon" alt="" />
+                      }
                       <span class="effect-name">{{effect.name}}:</span>
                       <span class="effect-value">{{effect.value}}</span>
+                      @if (effect.value2) {
+                        <span class="effect-value2">({{effect.value2}})</span>
+                      }
                       @if (effect.turn) {
-                        <span class="effect-turn">({{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}})</span>
+                        <span class="effect-turn">{{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}}</span>
+                      }
+                      @if (effect.count) {
+                        <span class="effect-count">x{{effect.count}}</span>
                       }
                     </li>
                   }
                 </ul>
+              }
+              @if (getActiveSkillActivationTraits(gi).length > 0) {
+                <p class="skill-traits">
+                  <strong>Requer:</strong>
+                  <span class="trait-pill">{{getActiveSkillActivationTraits(gi).join(', ')}}</span>
+                </p>
+              }
+              @if (getActiveSkillCondition(gi); as cond) {
+                <p class="skill-condition">{{cond}}</p>
               }
               <p class="skill-cooldown">Cooldown: {{getActiveSkillCooldown(gi)}} turns</p>
             </div>
@@ -111,6 +150,189 @@
                 [formControl]="activeSkillControls[gi]"
                 (change)="changeActiveSkillLevel(gi)">
                 @for (option of options; track option) {
+                  <option [value]="option">{{option+1}}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Class skills
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="skills-container">
+      @for (skill of classPassiveSkills; track skill.id) {
+        <div class="skill">
+          <div class="skill-image"><img [src]="skill.icon" alt=""></div>
+          <div class="skill-info">
+            <div class="detail">
+              <h3 class="skill-name">{{skill.name}}</h3>
+              <p class="skill-detail">{{getClassPassiveDetail(skill)}}</p>
+              @if (shouldShowClassPassiveEffects(skill) && getClassPassiveEffects(skill).length > 0) {
+                <ul class="skill-effects">
+                  @for (effect of getClassPassiveEffects(skill); track $index) {
+                    <li>
+                      @if (effect.icon) {
+                        <img class="effect-icon" [src]="effect.icon" alt="" />
+                      }
+                      <span class="effect-name">{{effect.name}}:</span>
+                      <span class="effect-value">{{effect.value}}</span>
+                      @if (effect.value2) {
+                        <span class="effect-value2">({{effect.value2}})</span>
+                      }
+                      @if (effect.turn) {
+                        <span class="effect-turn">{{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}}</span>
+                      }
+                      @if (effect.count) {
+                        <span class="effect-count">x{{effect.count}}</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+              @if (getClassPassiveActivationTraits(skill).length > 0) {
+                <p class="skill-traits">
+                  <strong>Requer:</strong>
+                  <span class="trait-pill">{{getClassPassiveActivationTraits(skill).join(', ')}}</span>
+                </p>
+              }
+              @if (getClassPassiveCondition(skill); as cond) {
+                <p class="skill-condition">{{cond}}</p>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </mat-expansion-panel>
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Noble Phantasm
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <div class="skills-container">
+      @for (group of noblePhantasmGroups; track group.num; let gi = $index) {
+        <div class="skill">
+          <div class="skill-image">
+            <img [src]="getNoblePhantasm(gi).icon" alt="">
+            <span class="np-badge"
+                  [class.buster]="getNoblePhantasm(gi).card === 'buster' || getNoblePhantasm(gi).card === '1'"
+                  [class.arts]="getNoblePhantasm(gi).card === 'arts' || getNoblePhantasm(gi).card === '2'"
+                  [class.quick]="getNoblePhantasm(gi).card === 'quick' || getNoblePhantasm(gi).card === '3'">
+              {{npCardLabel(getNoblePhantasm(gi).card)}}
+            </span>
+            <span class="np-rank">Rank {{getNoblePhantasm(gi).rank}}</span>
+            @if ((getNoblePhantasm(gi).npDistribution?.length ?? 0) > 1) {
+              <span class="np-hits"
+                    [title]="'Hit distribution: ' + (getNoblePhantasm(gi).npDistribution?.join(' / ') || '')">
+                {{getNoblePhantasm(gi).npDistribution?.length}} hits
+              </span>
+            }
+          </div>
+          <div class="skill-info">
+            <div class="detail">
+              @if (group.versions.length > 1) {
+                <div class="version-tabs" role="tablist" [attr.aria-label]="'NP versions for slot ' + group.num">
+                  @for (version of group.versions; track version.id; let vi = $index) {
+                    <button
+                      type="button"
+                      role="tab"
+                      class="version-tab"
+                      [class.active]="(npVersionControls[gi]?.value ?? 0) === vi"
+                      [attr.aria-selected]="(npVersionControls[gi]?.value ?? 0) === vi"
+                      (click)="npVersionControls[gi].setValue(vi)">
+                      {{getNoblePhantasmVersionLabel(version, vi)}}
+                    </button>
+                  }
+                </div>
+              } @else {
+                <h3 class="skill-name">{{getNoblePhantasm(gi).name}}</h3>
+              }
+              <p class="skill-detail">{{getNoblePhantasmDetail(gi)}}</p>
+              @if (shouldShowNoblePhantasmEffects(gi) && getNoblePhantasmEffects(gi).length > 0) {
+                <ul class="skill-effects">
+                  @for (effect of getNoblePhantasmEffects(gi); track $index) {
+                    <li>
+                      @if (effect.icon) {
+                        <img class="effect-icon" [src]="effect.icon" alt="" />
+                      }
+                      <span class="effect-name">{{effect.name}}:</span>
+                      <span class="effect-value">{{effect.value}}</span>
+                      @if (effect.value2) {
+                        <span class="effect-value2">({{effect.value2}})</span>
+                      }
+                      @if (effect.turn) {
+                        <span class="effect-turn">{{effect.turn}} turn{{effect.turn === 1 ? '' : 's'}}</span>
+                      }
+                      @if (effect.count) {
+                        <span class="effect-count">x{{effect.count}}</span>
+                      }
+                    </li>
+                  }
+                </ul>
+              }
+              @if (getNoblePhantasmActivationTraits(gi).length > 0) {
+                <p class="skill-traits">
+                  <strong>Alvo:</strong>
+                  <span class="trait-pill">{{getNoblePhantasmActivationTraits(gi).join(', ')}}</span>
+                </p>
+              }
+              @if (getNoblePhantasmCondition(gi); as cond) {
+                <p class="skill-condition">{{cond}}</p>
+              }
+              @if (getNoblePhantasmOvercharge(gi).length > 0) {
+                <div class="np-overcharge">
+                  <strong>Efeito por overcharge tier:</strong>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Efeito</th>
+                        @for (tier of [1,2,3,4,5]; track tier) {
+                          <th title="Overcharge tier {{tier}}">OC {{tier}}</th>
+                        }
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (oc of getNoblePhantasmOvercharge(gi); track $index) {
+                        <tr [class.oc-same-tier]="!oc.variesByTier">
+                          <td>
+                            {{oc.name}}
+                            @if (!oc.variesByTier) {
+                              <span class="oc-badge" title="Qualquer OC tier aplica este valor fixo">OC ✦</span>
+                            }
+                          </td>
+                          @for (value of oc.tiers; track $index) {
+                            <td>{{value}}</td>
+                          }
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+              <div class="np-gain">
+                <strong>NP gain por carta:</strong>
+                <ul>
+                  @for (gain of getNoblePhantasmCardGains(getNoblePhantasm(gi), getNoblePhantasmLevel(gi)); track gain.label) {
+                    <li [title]="gain.title">
+                      <span class="np-gain-label">{{gain.label}}:</span>
+                      <span class="np-gain-value">{{gain.value}}%</span>
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+            <div class="skill-level">
+              <p>NP level</p>
+              <select name="np-levels" attr.id="np-level-{{gi+1}}"
+                [formControl]="npLevelControls[gi]">
+                @for (option of npOptions; track option) {
                   <option [value]="option">{{option+1}}</option>
                 }
               </select>
